@@ -1,5 +1,6 @@
 import { useEffect, useRef, MouseEvent } from 'react';
 import { CURSOR_LENGTH, CURSOR_WIDTH, DELETE_INTERVAL } from '@/constants/backgroundConstants';
+import { drawingTest } from '@/hooks/test/drawingTest';
 import { getCanvasContextOnly } from '@/utils/getCanvasContextOnly';
 import { getDrawPoint } from '@/utils/getDrawPoint';
 
@@ -11,6 +12,8 @@ const Background = ({ className }: { className: string }) => {
 
   const offScreenCanvas = useRef<OffscreenCanvas>();
   const worker = useRef<Worker>();
+
+  const printTestResult = drawingTest(worker);
 
   // 커서 그리기
   useEffect(() => {
@@ -30,6 +33,14 @@ const Background = ({ className }: { className: string }) => {
         },
         [offScreenCanvas.current],
       );
+
+      worker.current.onmessage = (event) => {
+        const data = event.data;
+        if (data.message === 'end') {
+          console.log('Worker has signaled the end.');
+          printTestResult(performance.now());
+        }
+      };
     }
 
     const handleResize = () => {
@@ -59,7 +70,6 @@ const Background = ({ className }: { className: string }) => {
 
     const { canvas } = getCanvasContextOnly(cursorCanvasRef);
     const point = getDrawPoint(e, canvas);
-
     if (worker.current) worker.current.postMessage({ type: 'draw', value: { point } });
   };
 

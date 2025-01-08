@@ -27,7 +27,10 @@ self.onmessage = (evt) => {
     const { width, height } = evt.data.value;
     canvas.width = width;
     canvas.height = height;
-  } else points.push(evt.data.value.point);
+  } else {
+    points.push(evt.data.value.point);
+    if (evt.data.value.point.x == -1) self.postMessage({ message: 'end' });
+  }
 };
 
 const drawAni = () => {
