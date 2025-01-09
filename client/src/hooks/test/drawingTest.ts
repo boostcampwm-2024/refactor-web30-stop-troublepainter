@@ -20,6 +20,7 @@ export const drawingTest = (pointReceiver: MutableRefObject<Worker | Point[] | u
   const startTime = performance.now();
 
   const printResult = (finishTime: DOMHighResTimeStamp) => {
+    console.log('type : ', pointReceiver);
     console.log('startTIme : ', startTime, 'endTime : ', finishTime);
     console.log('total : ', finishTime - startTime);
   };

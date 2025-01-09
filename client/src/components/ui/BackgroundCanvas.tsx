@@ -1,4 +1,4 @@
-/* 1. 워크 캔버스 추가 코드
+/* 1. 워크 캔버스 추가 코드 */
 import { useEffect, useRef, MouseEvent } from 'react';
 import { CURSOR_LENGTH, CURSOR_WIDTH, DELETE_INTERVAL } from '@/constants/backgroundConstants';
 import { drawingTest } from '@/hooks/test/drawingTest';
@@ -14,7 +14,7 @@ const Background = ({ className }: { className: string }) => {
   const offScreenCanvas = useRef<OffscreenCanvas>();
   const worker = useRef<Worker>();
 
-  const printTestResult = drawingTest(worker, 2000);
+  const printTestResult = drawingTest(worker, 1000);
 
   // 커서 그리기
   useEffect(() => {
@@ -92,8 +92,11 @@ const Background = ({ className }: { className: string }) => {
 
 export default Background;
 
+//---- 코드
+//---- 구분
+//---- 줄
 
-/* 2. 기존 코드 - mousemove 핸들러에서 getContextContextOnly 메소드 사용 (Canvas 요소객체만 가져옴) 부분만 수정됨 */
+/* 2. 기존 코드 - mousemove 핸들러에서 getContextContextOnly 메소드 사용 (Canvas 요소객체만 가져옴) 부분만 수정됨 
 import { useEffect, useRef, MouseEvent } from 'react';
 import { Point } from '@troublepainter/core';
 import { CURSOR_LENGTH, CURSOR_WIDTH, DELETE_INTERVAL } from '@/constants/backgroundConstants';
@@ -114,7 +117,7 @@ const Background = ({ className }: { className: string }) => {
   const currentTimestamp = useRef(performance.now());
   const lastTimestamp = useRef(performance.now());
 
-  drawingTest(pointsRef, 2000);
+  drawingTest(pointsRef, 1000);
 
   // 커서 그리기
   useEffect(() => {
@@ -203,3 +206,4 @@ const Background = ({ className }: { className: string }) => {
 };
 
 export default Background;
+*/
