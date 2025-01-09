@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
 import { DrawingModule } from './drawing/drawing.module';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DrawingModule } from './drawing/drawing.module';
     GameModule,
     ChatModule,
     DrawingModule,
+    MetricsModule,
   ],
 })
 export class AppModule {}
