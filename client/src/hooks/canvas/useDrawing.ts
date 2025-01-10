@@ -114,7 +114,7 @@ export const useDrawing = (
   );
 
   const startDrawing = useCallback(
-    (point: Point): CRDTUpdateMessage | null => {
+    async (point: Point): Promise<CRDTUpdateMessage | null> => {
       if (state.checkInkAvailability() === false || !state.crdtRef.current) return null;
 
       state.currentStrokeIdsRef.current = [];
@@ -122,7 +122,7 @@ export const useDrawing = (
 
       const drawingData =
         state.drawingMode === DRAWING_MODE.FILL
-          ? operation.floodFill(Math.floor(point.x), Math.floor(point.y))
+          ? await operation.floodFill(Math.floor(point.x), Math.floor(point.y))
           : createDrawingData([point]);
 
       if (!drawingData) return null;
