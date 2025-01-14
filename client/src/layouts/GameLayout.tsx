@@ -4,6 +4,7 @@ import loading from '@/assets/lottie/loading.lottie';
 import { ChatContatiner } from '@/components/chat/ChatContatiner';
 import { NavigationModal } from '@/components/modal/NavigationModal';
 import { PlayerCardList } from '@/components/player/PlayerCardList';
+import BackgroundImage from '@/components/ui/BackgroundImage';
 import { useGameSocket } from '@/hooks/socket/useGameSocket';
 import BrowserNavigationGuard from '@/layouts/BrowserNavigationGuard';
 import GameHeader from '@/layouts/GameHeader';
@@ -30,11 +31,11 @@ const GameLayout = () => {
       <BrowserNavigationGuard />
       <NavigationModal />
       <div
-        className={`relative flex min-h-screen flex-col justify-start bg-gradient-to-b from-violet-950 via-violet-800 to-fuchsia-800 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:bg-patternImg before:bg-cover before:bg-center lg:py-5`}
+        className={`relative z-10 flex min-h-screen flex-col justify-start bg-gradient-to-b from-violet-950 via-violet-800 to-fuchsia-800 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:bg-cover before:bg-center lg:py-5`}
       >
+        <BackgroundImage className="-z-10" />
         {/* 상단 헤더 */}
         <GameHeader />
-
         <main className="mx-auto">
           <div
             className={cn(
