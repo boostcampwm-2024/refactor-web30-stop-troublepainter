@@ -23,7 +23,7 @@ const BackgroundImage = ({ className }: BackgroundImageProps) => {
       <div className={cn('absolute inset-0', className)}>
         <img
           src={tiny}
-          alt=""
+          alt="배경 패턴"
           className={cn(
             'h-full w-full object-cover transition-opacity duration-300',
             isLoaded ? 'opacity-0' : 'opacity-100',
