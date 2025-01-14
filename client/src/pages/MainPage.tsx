@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import Background from '@/components/ui/BackgroundCanvas';
+import BackgroundCanvas from '@/components/ui/BackgroundCanvas';
+import BackgroundImage from '@/components/ui/BackgroundImage';
 import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
 import { PixelTransitionContainer } from '@/components/ui/PixelTransitionContainer';
@@ -32,19 +33,17 @@ const MainPage = () => {
           isExiting ? 'bg-transparent' : 'bg-gradient-to-b from-violet-950 via-violet-800 to-fuchsia-700',
         )}
       >
-        <Background
-          className={cn(
-            'before:contents-[""] absolute -z-10 h-full w-full before:absolute before:left-0 before:top-0 before:h-full before:w-full before:bg-patternImg before:bg-cover before:bg-center',
-          )}
-        />
-        <div className="duration-1000 animate-in fade-in slide-in-from-top-8">
+        <BackgroundImage className="-z-30" />
+        <BackgroundCanvas className="pointer-events-auto absolute inset-0 -z-20" />
+
+        <div className="-z-10 duration-1000 animate-in fade-in slide-in-from-top-8">
           <Logo variant="main" className="w-full transition duration-300 hover:scale-110 hover:brightness-[1.12]" />
         </div>
 
         <Button
           onClick={() => void handleCreateRoom()}
           disabled={isLoading || isExiting}
-          className="h-12 max-w-72 animate-pulse"
+          className="-z-10 h-12 max-w-72 animate-pulse"
         >
           {isLoading || isExiting ? '방 생성중...' : '방 만들기'}
         </Button>
