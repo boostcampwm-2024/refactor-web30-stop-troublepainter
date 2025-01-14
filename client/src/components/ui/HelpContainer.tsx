@@ -1,29 +1,41 @@
-import { MouseEvent } from 'react';
+import { lazy, MouseEvent, Suspense, useState } from 'react';
 import helpIcon from '@/assets/help-icon.svg';
-import HelpRollingModal from '@/components/modal/HelpRollingModal';
 import { Button } from '@/components/ui/Button';
 import { useModal } from '@/hooks/useModal';
 
-const HelpContainer = ({}) => {
+const HelpRollingModal = lazy(() => import('@/components/modal/HelpRollingModal'));
+
+const HelpContainer = () => {
   const { isModalOpened, closeModal, openModal, handleKeyDown } = useModal();
+  const [shouldLoadModal, setShouldLoadModal] = useState(false);
 
   const handleOpenHelpModal = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     openModal();
   };
+
+  const handleMouseEnter = () => {
+    setShouldLoadModal(true);
+  };
+
   return (
     <nav className="fixed right-4 top-4 z-30 xs:right-8 xs:top-8">
       <Button
         variant="transperent"
         size="icon"
         onClick={handleOpenHelpModal}
+        onPointerEnter={handleMouseEnter}
         aria-label="도움말 보기"
         className="hover:brightness-75"
       >
         <img src={helpIcon} alt="도움말 보기 버튼" />
       </Button>
-      <HelpRollingModal isModalOpened={isModalOpened} handleCloseModal={closeModal} handleKeyDown={handleKeyDown} />
+
+      {shouldLoadModal && (
+        <Suspense fallback={null}>
+          <HelpRollingModal isModalOpened={isModalOpened} handleCloseModal={closeModal} handleKeyDown={handleKeyDown} />
+        </Suspense>
+      )}
     </nav>
   );
 };

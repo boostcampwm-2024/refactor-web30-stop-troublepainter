@@ -12,6 +12,15 @@ const MainPage = () => {
   const { createRoom, isLoading } = useCreateRoom();
   const { isExiting, transitionTo } = usePageTransition();
 
+  const preloadGamePage = async () => {
+    await Promise.all([
+      import('@/layouts/GameLayout'),
+      import('@/pages/LobbyPage'),
+      import('@/pages/GameRoomPage'),
+      import('@/pages/ResultPage'),
+    ]);
+  };
+
   useEffect(() => {
     // 현재 URL을 루트로 변경
     window.history.replaceState(null, '', '/');
@@ -44,6 +53,7 @@ const MainPage = () => {
           onClick={() => void handleCreateRoom()}
           disabled={isLoading || isExiting}
           className="-z-10 h-12 max-w-72 animate-pulse"
+          onPointerEnter={() => void preloadGamePage()}
         >
           {isLoading || isExiting ? '방 생성중...' : '방 만들기'}
         </Button>

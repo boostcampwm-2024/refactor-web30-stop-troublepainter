@@ -1,10 +1,15 @@
+import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import GameLayout from './layouts/GameLayout';
-import RootLayout from './layouts/RootLayout';
-import LobbyPage from './pages/LobbyPage';
-import MainPage from './pages/MainPage';
-import GameRoomPage from '@/pages/GameRoomPage';
-import ResultPage from '@/pages/ResultPage';
+
+// Layouts
+const RootLayout = lazy(() => import('@/layouts/RootLayout'));
+const GameLayout = lazy(() => import('@/layouts/GameLayout'));
+
+// Pages
+const MainPage = lazy(() => import('@/pages/MainPage'));
+const LobbyPage = lazy(() => import('@/pages/LobbyPage'));
+const GameRoomPage = lazy(() => import('@/pages/GameRoomPage'));
+const ResultPage = lazy(() => import('@/pages/ResultPage'));
 
 export const router = createBrowserRouter(
   [
@@ -17,6 +22,15 @@ export const router = createBrowserRouter(
         },
         {
           element: <GameLayout />,
+          loader: async () => {
+            const [lobbyPage, gameRoomPage, resultPage] = await Promise.all([
+              import('@/pages/LobbyPage'),
+              import('@/pages/GameRoomPage'),
+              import('@/pages/ResultPage'),
+            ]);
+
+            return { lobbyPage, gameRoomPage, resultPage };
+          },
           children: [
             {
               path: '/lobby/:roomId',
