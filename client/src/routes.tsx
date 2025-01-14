@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom';
-import GameLayout from '@/layouts/GameLayout';
-import RootLayout from '@/layouts/RootLayout';
+import GameLayout from './layouts/GameLayout';
+import RootLayout from './layouts/RootLayout';
+import LobbyPage from './pages/LobbyPage';
+import MainPage from './pages/MainPage';
 import GameRoomPage from '@/pages/GameRoomPage';
-import LobbyPage from '@/pages/LobbyPage';
-import MainPage from '@/pages/MainPage';
 import ResultPage from '@/pages/ResultPage';
 
 export const router = createBrowserRouter(
