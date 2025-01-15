@@ -1,121 +1,112 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <!-- 기본 메타데이터 -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "VideoGame",
-        "name": "방해꾼은 못말려: 그림꾼의 역습",
-        "description": "잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️",
-        "image": "https://troublepainter.site/android-chrome-512x512.png",
-        "url": "https://troublepainter.site",
-        "author": {
-          "@type": "Organization",
-          "name": "troublepainter"
-        },
-        "genre": ["Drawing", "Multiplayer", "Quiz"],
-        "gamePlatform": "Web Browser",
-        "numberOfPlayers": {
-          "@type": "QuantitativeValue",
-          "minValue": 4,
-          "maxValue": 5
-        },
-        "applicationCategory": "Game",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "KRW",
-          "availability": "http://schema.org/InStock"
-        },
-        "inLanguage": "ko",
-        "copyrightYear": 2024,
-        "gameServer": "WebSocket",
-        "playMode": "Multiplayer",
-        "audience": "Everyone",
-        "requirementsMinimum": {
-          "@type": "GamePlayRequirement",
-          "requiresDevice": "Desktop or Mobile Browser with WebSocket support"
-        }
+
+<head>
+  <!-- 기본 메타데이터 -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "방해꾼은 못말려: 그림꾼의 역습",
+      "description": "잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️",
+      "image": "https://troublepainter.site/android-chrome-512x512.png",
+      "url": "https://troublepainter.site",
+      "author": {
+        "@type": "Organization",
+        "name": "troublepainter"
+      },
+      "genre": ["Drawing", "Multiplayer", "Quiz"],  
+      "gamePlatform": "Web Browser",
+      "numberOfPlayers": {
+        "@type": "QuantitativeValue",
+        "minValue": 4,
+        "maxValue": 5
+      },
+      "applicationCategory": "Game",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW",
+        "availability": "http://schema.org/InStock"
+      },
+      "inLanguage": "ko",
+      "copyrightYear": 2024,
+      "gameServer": "WebSocket",
+      "playMode": "Multiplayer",
+      "audience": "Everyone", 
+      "requirementsMinimum": {
+        "@type": "GamePlayRequirement",
+        "requiresDevice": "Desktop or Mobile Browser with WebSocket support"
       }
-    </script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    }
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link
-      rel="preload"
-      href="https://cdn.jsdelivr.net/gh/neodgm/neodgm-pro-webfont@1.020/neodgm_pro/neodgm_pro.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
-    />
+  <link
+    rel="preload"
+    href="https://cdn.jsdelivr.net/gh/neodgm/neodgm-pro-webfont@1.020/neodgm_pro/neodgm_pro.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  >
 
-    <meta name="theme-color" content="#7A38FF" />
-    <!-- 브라우저 테마 색상 (violet-500) -->
-    <meta
-      name="description"
-      content="잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️"
-    />
-    <meta name="keywords" content="게임, 드로잉, 실시간, 멀티플레이어, 웹게임, 온라인게임, 퀴즈게임" />
-    <meta name="author" content="troublepainter" />
+  <meta name="theme-color" content="#7A38FF"> <!-- 브라우저 테마 색상 (violet-500) -->
+  <meta name="description" content="잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️">
+  <meta name="keywords" content="게임, 드로잉, 실시간, 멀티플레이어, 웹게임, 온라인게임, 퀴즈게임">
+  <meta name="author" content="troublepainter">
 
-    <!-- IE 관련 설정, 구버전 IE의 호환성 모드를 방지 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- IE 관련 설정, 구버전 IE의 호환성 모드를 방지 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- XSS Protection 활성화 -->
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
-    <!-- MIME 타입 스니핑 방지 -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <!-- XSS Protection 활성화 -->
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+  <!-- MIME 타입 스니핑 방지 -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
 
-    <!-- 모바일 관련 설정 -->
-    <!-- 모바일 기기에서 웹 앱을 전체 화면 모드로 실행 가능하게 -->
-    <meta name="mobile-web-app-capable" content="yes" />
-    <!-- 상태 바를 반투명한 검은색으로 만들어 웹 앱의 콘텐츠가 상태 바 아래로 확장 가능하게 -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <!-- 모바일 관련 설정 -->
+  <!-- 모바일 기기에서 웹 앱을 전체 화면 모드로 실행 가능하게 -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- 상태 바를 반투명한 검은색으로 만들어 웹 앱의 콘텐츠가 상태 바 아래로 확장 가능하게 -->
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://troublepainter.site/" />
-    <meta property="og:title" content="방해꾼은 못말려: 그림꾼의 역습 | 실시간 드로잉 퀴즈 게임" />
-    <meta
-      property="og:description"
-      content="잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️"
-    />
-    <meta property="og:image" content="https://kr.object.ncloudstorage.com/troublepainter-assets/logo/main-logo.png" />
-    <meta property="og:site_name" content="troublepainter" />
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://troublepainter.site/">
+  <meta property="og:title" content="방해꾼은 못말려: 그림꾼의 역습 | 실시간 드로잉 퀴즈 게임">
+  <meta property="og:description"
+    content="잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️">
+  <meta property="og:image" content="https://kr.object.ncloudstorage.com/troublepainter-assets/logo/main-logo.png">
+  <meta property="og:site_name" content="troublepainter">
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://troublepainter.site/" />
-    <meta name="twitter:title" content="방해꾼은 못말려: 그림꾼의 역습 | 실시간 드로잉 퀴즈 게임" />
-    <meta
-      name="twitter:description"
-      content="잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️"
-    />
-    <meta
-      property="twitter:image"
-      content="https://kr.object.ncloudstorage.com/troublepainter-assets/logo/main-logo.png"
-    />
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://troublepainter.site/">
+  <meta name="twitter:title" content="방해꾼은 못말려: 그림꾼의 역습 | 실시간 드로잉 퀴즈 게임">
+  <meta name="twitter:description"
+    content="잘 그렸나? 망쳤나? 정체를 숨긴 방해꾼이 쏘아올린 혼돈 속에서, 그림꾼들의 진실을 찾아내는 구경꾼들의 훈수가 시작됩니다! 🎨🕵️‍♀️">
+  <meta property="twitter:image" content="https://kr.object.ncloudstorage.com/troublepainter-assets/logo/main-logo.png">
 
-    <!-- 기본 파비콘 -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <!-- iOS/Safari용 -->
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <!-- Android Chrome용 -->
-    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
-    <!-- 다른 크기의 파비콘들 -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <!-- 웹 매니페스트 -->
-    <link rel="manifest" href="/site.webmanifest" />
+  <!-- 기본 파비콘 -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <!-- iOS/Safari용 -->
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <!-- Android Chrome용 -->
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+  <!-- 다른 크기의 파비콘들 -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <!-- 웹 매니페스트 -->
+  <link rel="manifest" href="/site.webmanifest">
 
-    <title>방해꾼은 못말려 : 그림꾼들의 역습</title>
-  </head>
+  <title>방해꾼은 못말려 : 그림꾼들의 역습</title>
+</head>
 
-  <body>
-    <div id="root"></div>
-    <div id="modal-root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<body>
+  <div id="root"></div>
+  <div id="modal-root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
 </html>
