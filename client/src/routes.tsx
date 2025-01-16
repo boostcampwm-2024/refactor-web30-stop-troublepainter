@@ -22,19 +22,19 @@ export const router = createBrowserRouter(
         },
         {
           element: <GameLayout />,
-          loader: async () => {
-            const [lobbyPage, gameRoomPage, resultPage] = await Promise.all([
-              import('@/pages/LobbyPage'),
-              import('@/pages/GameRoomPage'),
-              import('@/pages/ResultPage'),
-            ]);
-
-            return { lobbyPage, gameRoomPage, resultPage };
-          },
           children: [
             {
               path: '/lobby/:roomId',
               element: <LobbyPage />,
+              loader: async () => {
+                await Promise.all([
+                  import('@/layouts/RootLayout'),
+                  import('@/layouts/GameLayout'),
+                  import('@/pages/LobbyPage'),
+                ]);
+                void Promise.all([import('@/pages/GameRoomPage'), import('@/pages/ResultPage')]);
+                return null;
+              },
             },
             {
               path: '/game/:roomId',
