@@ -16,7 +16,7 @@ const BackgroundImage = ({ className }: BackgroundImageProps) => {
     if (img) {
       img.onload = () => setIsLoaded(true);
     }
-  }, []);
+  }, [imgRef.current]);
 
   return (
     <>
