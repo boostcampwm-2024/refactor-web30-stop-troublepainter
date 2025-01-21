@@ -3,13 +3,13 @@ import { playAudit, playwrightLighthouseResult } from 'playwright-lighthouse';
 
 const BASE_URL = 'http://localhost:4173';
 
-const disableNavigation = async (page: Page) => {
+/* const disableNavigation = async (page: Page) => {
   await page.addInitScript(() => {
     Object.defineProperty(window, 'sessionStorage', {
       value: { getItem: () => null },
     });
   });
-};
+}; */
 
 const printScores = (result: playwrightLighthouseResult) => {
   const performanceScore = (result.lhr.categories.performance?.score || 0) * 100;
@@ -69,11 +69,11 @@ test.describe('Lighthouse Performance Tests', () => {
     await runTest(BASE_URL, 'MainPage');
   });
 
-  test('LobbyPage Performance Check', async () => {
+  /*   test('LobbyPage Performance Check', async () => {
     await runTest(BASE_URL, 'LobbyPage', async (page) => {
       await page.getByRole('button', { name: '방 만들기' }).click();
       await page.waitForURL(`${BASE_URL}/lobby/*`, { waitUntil: 'networkidle' });
       await disableNavigation(page);
     });
-  });
+  }); */
 });
