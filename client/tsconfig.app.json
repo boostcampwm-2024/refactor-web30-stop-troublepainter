@@ -29,6 +29,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", ".storybook/**/*", "vite.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", ".storybook/**/*", "vite.config.ts", "playwright.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
