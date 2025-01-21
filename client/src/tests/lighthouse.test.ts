@@ -3,12 +3,6 @@ import { playAudit, playwrightLighthouseResult } from 'playwright-lighthouse';
 
 const BASE_URL = 'http://localhost:4173';
 
-const setupBrowserAndPage = async () => {
-  const browser = await chromium.launch();
-  const page = await browser.newPage();
-  return { browser, page };
-};
-
 const disableNavigation = async (page: Page) => {
   await page.addInitScript(() => {
     Object.defineProperty(window, 'sessionStorage', {
@@ -51,7 +45,10 @@ const runLighthouseAudit = async (page: Page, pageName: string) => {
 };
 
 const runTest = async (url: string, pageName: string, setupPage?: (page: Page) => Promise<void>) => {
-  const { browser, page } = await setupBrowserAndPage();
+  const browser = await chromium.launch();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
   try {
     await page.goto(url);
     if (setupPage) {

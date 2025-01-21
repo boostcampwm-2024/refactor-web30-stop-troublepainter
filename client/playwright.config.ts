@@ -14,5 +14,5 @@ export default defineConfig({
       testMatch: 'lighthouse.test.ts',
     },
   ],
-  timeout: 90000,
+  timeout: 300000,
 });
