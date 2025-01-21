@@ -80,8 +80,13 @@ jobs:
       - name: Stop server
         working-directory: ./client
         run: |
-          pkill -f "pnpm start"
-          echo "Server stopped."
+          PID=$(lsof -ti :4173)
+          if [ -n "$PID" ]; then
+            kill -9 $PID
+            echo "Server stopped."
+          else
+            echo "Server not running on port 4173."
+          fi
 
       - name: Comment PR
         uses: actions/github-script@v6
