@@ -65,6 +65,7 @@ jobs:
           npx wait-on http://localhost:4173
 
       - name: Install Playwright browsers
+        working-directory: ./client
         run: npx playwright install
 
       - name: Run Lighthouse audit
