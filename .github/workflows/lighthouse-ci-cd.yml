@@ -60,34 +60,26 @@ jobs:
       - name: Build and Start production server
         working-directory: ./client
         run: |
-          echo "Building client..."
-          pnpm build || { echo "Build failed."; exit 1; }
-          echo "Starting server..."
+          pnpm build 
           pnpm start & 
-          npx wait-on http://localhost:4173 || { echo "Server did not start."; exit 1; }
-          echo "Server started."
+          npx wait-on http://localhost:4173
+
+      - name: Install Playwright browsers
+        run: npx playwright install
 
       - name: Run Lighthouse audit
         working-directory: ./client
         id: lighthouse
         run: |
           OUTPUT=$(pnpm lighthouse)
-          echo "Lighthouse output: $OUTPUT"
-          if [ $? -eq 0 ]; then
-            echo "results<<EOF" >> $GITHUB_OUTPUT
-            echo "$OUTPUT" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            echo "Lighthouse audit completed successfully."
-          else
-            echo "Lighthouse audit failed." >&2
-            exit 1
-          fi
+          echo "results<<EOF" >> $GITHUB_OUTPUT
+          echo "$OUTPUT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Stop server
         working-directory: ./client
         run: |
           pkill -f "pnpm start"
-          npx wait-on http://localhost:4173 || { echo "Server did not stop."; exit 1; }
           echo "Server stopped."
 
       - name: Comment PR
