@@ -1,0 +1,103 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+    paths:
+      - "client/**"
+      - "core/**"
+      - ".github/workflows/lighthouse-*.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lighthouse-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
+
+      - name: Install all dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build core package
+        run: |
+          echo "Building core package..."
+          pnpm --filter @troublepainter/core build
+          echo "Core build output:"
+          ls -la core/dist/
+
+      - name: Verify core build
+        run: |
+          if [ ! -f "core/dist/index.mjs" ]; then
+            echo "Core build failed - index.mjs not found"
+            exit 1
+          fi
+
+      - name: Build and Start production server
+        working-directory: ./client
+        run: |
+          echo "Building client..."
+          pnpm build || { echo "Build failed."; exit 1; }
+          echo "Starting server..."
+          pnpm start & 
+          npx wait-on http://localhost:4173 || { echo "Server did not start."; exit 1; }
+          echo "Server started."
+
+      - name: Run Lighthouse audit
+        working-directory: ./client
+        id: lighthouse
+        run: |
+          OUTPUT=$(pnpm lighthouse)
+          if [ $? -eq 0 ]; then
+            echo "results<<EOF" >> $GITHUB_OUTPUT
+            echo "$OUTPUT" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "Lighthouse audit completed successfully."
+          else
+            echo "Lighthouse audit failed." >&2
+            exit 1
+          fi
+
+      - name: Stop server
+        working-directory: ./client
+        run: |
+          pkill -f "pnpm start"
+          npx wait-on http://localhost:4173 || { echo "Server did not stop."; exit 1; }
+          echo "Server stopped."
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const output = `${{ steps.lighthouse.outputs.results }}`;
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '```\n' + output.replace(/\u001b\[\d+m/g, '') + '\n```'
+            });
