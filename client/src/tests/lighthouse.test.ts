@@ -72,7 +72,7 @@ test.describe('Lighthouse Performance Tests', () => {
   test('LobbyPage Performance Check', async () => {
     await runTest(BASE_URL, 'LobbyPage', async (page) => {
       await page.getByRole('button', { name: '방 만들기' }).click();
-      await page.waitForURL(`${BASE_URL}/lobby/*`);
+      await page.waitForURL(`${BASE_URL}/lobby/*`, { waitUntil: 'networkidle' });
       await disableNavigation(page);
     });
   });
