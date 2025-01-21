@@ -72,6 +72,7 @@ jobs:
         id: lighthouse
         run: |
           OUTPUT=$(pnpm lighthouse)
+          echo "Lighthouse output: $OUTPUT"
           if [ $? -eq 0 ]; then
             echo "results<<EOF" >> $GITHUB_OUTPUT
             echo "$OUTPUT" >> $GITHUB_OUTPUT
