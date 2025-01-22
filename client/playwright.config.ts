@@ -14,5 +14,10 @@ export default defineConfig({
       testMatch: 'lighthouse.test.ts',
     },
   ],
-  timeout: 300000,
+
+  webServer: {
+    command: 'pnpm start',
+    port: 4173,
+    reuseExistingServer: !process.env.CI,
+  },
 });
