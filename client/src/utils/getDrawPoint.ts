@@ -1,4 +1,4 @@
-import { TouchEvent as ReactTouchEvent, MouseEvent as ReactMouseEvent } from 'react';
+import { TouchEvent as ReactTouchEvent, MouseEvent as ReactMouseEvent, PointerEvent } from 'react';
 import { Point } from '@troublepainter/core';
 
 /**
@@ -47,4 +47,8 @@ export const getDrawPoint = (
   if (e.nativeEvent instanceof MouseEvent) return { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY };
   else if (e.nativeEvent instanceof TouchEvent) return getTouchPoint(canvas, e.nativeEvent);
   else throw new Error('mouse 혹은 touch 이벤트가 아닙니다.');
+};
+
+export const getDrawPoint_Pointer = (e: PointerEvent<HTMLCanvasElement>) => {
+  return { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY };
 };
