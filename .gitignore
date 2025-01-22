@@ -50,6 +50,7 @@ lerna-debug.log*
 # Tests
 /coverage
 /.nyc_output
+/client/test_results
 
 # IDEs and editors
 /.idea
