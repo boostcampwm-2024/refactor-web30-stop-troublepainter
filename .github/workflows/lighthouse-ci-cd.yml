@@ -59,7 +59,7 @@ jobs:
 
       - name: Install Playwright browsers
         working-directory: ./client
-        run: npx playwright install --with-deps
+        run: npx playwright install
 
       - name: Run Lighthouse audit
         working-directory: ./client
@@ -75,5 +75,51 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: lighthouse-report
-          path: client/.lighthouse/**/*.html
+          path: |
+            client/.lighthouse/MainPage.html
+            client/.lighthouse/LobbyPage.html
           retention-days: 30
+
+      - name: Create PR Comment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs')
+            const results = JSON.parse(fs.readFileSync('client/.lighthouse/results.json', 'utf8'))
+
+            const getEmoji = (score) => {
+              if (score >= 90) return '🟢'
+              else if (score >= 50) return '🟡';
+              else return '🔴'
+            }
+
+            let comment = '### 🚦 Lighthouse Audit Results\n\n';
+
+            results.forEach(result => {
+              comment += `<details>\n<summary>${result.pageName}</summary>\n\n`
+
+              //Categories
+              comment += '#### Category Scores\n\n';
+              comment += '| Category | Score |\n|----------|-------|\n';
+              Object.entries(result.categories).forEach(([key, value]) => {
+                const emoji = getEmoji(value.score);
+                comment += `| ${key} | ${emoji} ${value.score} |\n`
+              })
+
+              // Metrics
+              comment += '\n#### Core Web Vitals & Metrics\n\n';
+              comment += '| Metric | Value | Score |\n|---------|--------|-------|\n';
+              Object.entries(result.metrics).forEach(([key, value]) => {
+                const emoji = getEmoji(value.score);
+                comment += `| ${key} | ${value.displayValue} | ${emoji} ${value.score} |\n`;
+              })
+
+              comment += '</details>\n\n\n';
+            })
+
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            })
