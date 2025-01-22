@@ -49,6 +49,21 @@ export const getDrawPoint = (
   else throw new Error('mouse 혹은 touch 이벤트가 아닙니다.');
 };
 
-export const getDrawPoint_Pointer = (e: PointerEvent<HTMLCanvasElement>) => {
+/**
+ * PointerEvent 객체로부터 마우스 좌표를 가져오는 Util입니다.
+ * - 이벤트 객체를 매개변수로 받아 offsetX, offsetY 값을 반환합니다.
+ * - 좌표는 캔버스 좌측 상단이 (0,0) 입니다.
+ *
+ * @param e - PointerEvent 객체
+ * @returns 사용자 정의 Point 타입 객체
+ *
+ * @example
+ * ```typescript
+ * const {x, y} = getDrawPoint_Pointer(e);
+ * ```
+ *
+ * @category Utils
+ */
+export const getDrawPoint_Pointer = (e: PointerEvent<HTMLCanvasElement>): Point => {
   return { x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY };
 };
