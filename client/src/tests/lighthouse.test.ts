@@ -1,34 +1,90 @@
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { join } from 'path';
 import { test, Page, chromium } from '@playwright/test';
 import { playAudit, playwrightLighthouseResult } from 'playwright-lighthouse';
 
 const BASE_URL = 'http://localhost:4173';
 
-/* const disableNavigation = async (page: Page) => {
-  await page.addInitScript(() => {
-    Object.defineProperty(window, 'sessionStorage', {
-      value: { getItem: () => null },
-    });
-  });
-}; */
+type CategoryName = 'performance' | 'accessibility' | 'best-practices' | 'seo';
 
-const printScores = (result: playwrightLighthouseResult) => {
-  const performanceScore = (result.lhr.categories.performance?.score || 0) * 100;
-  const performanceMetrics = {
-    FCP: result.lhr.audits['first-contentful-paint'].displayValue,
-    LCP: result.lhr.audits['largest-contentful-paint'].displayValue,
-    TBT: result.lhr.audits['total-blocking-time'].displayValue,
-    CLS: result.lhr.audits['cumulative-layout-shift'].displayValue,
-    SI: result.lhr.audits['speed-index'].displayValue,
+type MetricName =
+  | 'first-contentful-paint'
+  | 'largest-contentful-paint'
+  | 'total-blocking-time'
+  | 'cumulative-layout-shift'
+  | 'speed-index';
+
+type MetricNickname = 'FCP' | 'LCP' | 'TBT' | 'CLS' | 'SI';
+
+interface MetricValue {
+  displayValue: string;
+  score: number;
+}
+
+interface CategoryValue {
+  score: number;
+}
+
+type Categories = Record<CategoryName, CategoryValue>;
+type Metrics = Record<MetricNickname, MetricValue>;
+
+interface PageResult {
+  pageName: string;
+  categories: Categories;
+  metrics: Metrics;
+}
+
+const results: PageResult[] = [];
+
+const saveResults = () => {
+  const resultsDir = './.lighthouse';
+  if (!existsSync(resultsDir)) {
+    mkdirSync(resultsDir, { recursive: true });
+  }
+
+  writeFileSync(join(resultsDir, 'results.json'), JSON.stringify(results, null, 2));
+};
+
+const getMetricScore = (result: playwrightLighthouseResult, metricName: MetricName) => {
+  const audit = result.lhr.audits[metricName];
+  return {
+    displayValue: audit.displayValue || '',
+    score: (audit.score || 0) * 100,
+  };
+};
+
+const extractLighthouseResult = (result: playwrightLighthouseResult) => {
+  const categories: Categories = {
+    performance: { score: (result.lhr.categories.performance?.score || 0) * 100 },
+    accessibility: { score: (result.lhr.categories.accessibility?.score || 0) * 100 },
+    'best-practices': { score: (result.lhr.categories['best-practices']?.score || 0) * 100 },
+    seo: { score: (result.lhr.categories.seo?.score || 0) * 100 },
   };
 
-  console.log('Performance Score:', performanceScore);
-  console.table(performanceMetrics);
+  const metrics: Metrics = {
+    FCP: getMetricScore(result, 'first-contentful-paint'),
+    LCP: getMetricScore(result, 'largest-contentful-paint'),
+    TBT: getMetricScore(result, 'total-blocking-time'),
+    CLS: getMetricScore(result, 'cumulative-layout-shift'),
+    SI: getMetricScore(result, 'speed-index'),
+  };
+
+  return { categories, metrics };
+};
+
+const printScores = (pageName: string, categories: Categories, metrics: Metrics) => {
+  console.log(`\n-----${pageName}-----`);
+  console.table(categories);
+  console.table(metrics);
 };
 
 const getLighthouseConfig = (pageName: string) => ({
   port: 9222,
   thresholds: {
     performance: 0,
+    accessibility: 0,
+    'best-practices': 0,
+    seo: 0,
   },
   reports: {
     formats: { html: true },
@@ -55,10 +111,13 @@ const runTest = async (url: string, pageName: string, setupPage?: (page: Page) =
       await setupPage(page);
     }
     const result = await runLighthouseAudit(page, pageName);
-    console.log('-----' + pageName + '-----');
-    printScores(result);
+    const { categories, metrics } = extractLighthouseResult(result);
+    printScores(pageName, categories, metrics);
+    results.push({ pageName, categories, metrics });
+    saveResults();
   } catch (error) {
     console.error(`Error during ${pageName} test:`, error);
+    throw error;
   } finally {
     await browser.close();
   }
@@ -69,11 +128,10 @@ test.describe('Lighthouse Performance Tests', () => {
     await runTest(BASE_URL, 'MainPage');
   });
 
-  /*   test('LobbyPage Performance Check', async () => {
+  test('LobbyPage Performance Check', async () => {
     await runTest(BASE_URL, 'LobbyPage', async (page) => {
       await page.getByRole('button', { name: '방 만들기' }).click();
-      await page.waitForURL(`${BASE_URL}/lobby/*`, { waitUntil: 'networkidle' });
-      await disableNavigation(page);
+      await page.waitForURL(`${BASE_URL}/lobby/*`);
     });
-  }); */
+  });
 });
