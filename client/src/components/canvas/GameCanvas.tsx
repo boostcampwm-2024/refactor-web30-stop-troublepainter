@@ -1,5 +1,6 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useCallback, useEffect, useRef } from 'react';
 import { PlayerRole, RoomStatus } from '@troublepainter/core';
+import { Point } from '@troublepainter/core';
 import { Canvas } from '@/components/canvas/CanvasUI';
 import { COLORS_INFO, DEFAULT_MAX_PIXELS, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
 import { handleInCanvas, handleOutCanvas } from '@/handlers/canvas/cursorInOutHandler';
@@ -9,8 +10,20 @@ import { useDrawing } from '@/hooks/canvas/useDrawing';
 import { useDrawingSocket } from '@/hooks/socket/useDrawingSocket';
 import { useCoordinateScale } from '@/hooks/useCoordinateScale';
 import { CanvasEventHandlers } from '@/types/canvas.types';
-import { getCanvasContext } from '@/utils/getCanvasContext';
-import { getDrawPoint } from '@/utils/getDrawPoint';
+
+const getCanvasPoint = (
+  e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>,
+  canvas: HTMLCanvasElement,
+): Point => {
+  const rect = canvas.getBoundingClientRect();
+  const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+  const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+
+  return {
+    x: ((clientX - rect.left) * canvas.width) / rect.width,
+    y: ((clientY - rect.top) * canvas.height) / rect.height,
+  };
+};
 
 interface GameCanvasProps {
   role: PlayerRole;
@@ -103,14 +116,12 @@ const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomSt
   }));
 
   const handleDrawStart = useCallback(
-    (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
-      if (!isConnected) return;
+    async (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+      if (!isConnected || !canvasRef.current) return;
 
-      const { canvas } = getCanvasContext(canvasRef);
-      const point = getDrawPoint(e, canvas);
-      const convertPoint = convertCoordinate(point);
+      const point = getCanvasPoint(e, canvasRef.current);
 
-      const crdtDrawingData = startDrawing(convertPoint);
+      const crdtDrawingData = await startDrawing(point);
       if (crdtDrawingData) {
         void drawingSocketHandlers.sendDrawing(crdtDrawingData);
       }
@@ -120,27 +131,27 @@ const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomSt
 
   const handleDrawMove = useCallback(
     (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
-      const { canvas } = getCanvasContext(canvasRef);
-      const point = getDrawPoint(e, canvas);
-      const convertPoint = convertCoordinate(point);
+      if (!canvasRef.current) return;
 
-      handleInCanvas(cursorCanvasRef, convertPoint, brushSize);
+      const point = getCanvasPoint(e, canvasRef.current);
 
-      const crdtDrawingData = continueDrawing(convertPoint);
+      handleInCanvas(cursorCanvasRef, point, brushSize);
+
+      const crdtDrawingData = continueDrawing(point);
       if (crdtDrawingData) {
         void drawingSocketHandlers.sendDrawing(crdtDrawingData);
       }
     },
-    [continueDrawing, convertCoordinate, isConnected],
+    [continueDrawing, convertCoordinate, brushSize],
   );
 
   const handleDrawLeave = useCallback(
     (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
-      const { canvas } = getCanvasContext(canvasRef);
-      const point = getDrawPoint(e, canvas);
-      const convertPoint = convertCoordinate(point);
+      if (!canvasRef.current) return;
 
-      const crdtDrawingData = continueDrawing(convertPoint);
+      const point = getCanvasPoint(e, canvasRef.current);
+
+      const crdtDrawingData = continueDrawing(point);
       if (crdtDrawingData) {
         void drawingSocketHandlers.sendDrawing(crdtDrawingData);
       }
@@ -148,7 +159,7 @@ const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomSt
       handleOutCanvas(cursorCanvasRef);
       stopDrawing();
     },
-    [continueDrawing, handleOutCanvas, stopDrawing],
+    [continueDrawing, stopDrawing],
   );
 
   const handleDrawEnd = useCallback(() => {
