@@ -1,3 +1,5 @@
+import { Page } from '@playwright/test';
+
 type CategoryName = 'performance' | 'accessibility' | 'best-practices' | 'seo';
 
 export type MetricName =
@@ -25,4 +27,10 @@ export interface LighthouseResult {
   pageName: string;
   categories: Categories;
   metrics: Metrics;
+}
+
+export interface TestCase {
+  url: string;
+  pageName: string;
+  setup?: (page: Page) => Promise<void>;
 }

@@ -3,8 +3,7 @@ import { join } from 'path';
 import { Page, chromium } from '@playwright/test';
 import { playAudit, playwrightLighthouseResult } from 'playwright-lighthouse';
 import { LIGHTHOUSE_CONFIG } from './lighthouse.config';
-import { Categories, LighthouseResult, MetricName, Metrics } from './lighthouse.type';
-import { TestCase } from './testCases';
+import { Categories, LighthouseResult, MetricName, Metrics, TestCase } from './lighthouse.type';
 
 const RESULTS_DIR = './.lighthouse';
 const results: LighthouseResult[] = [];
