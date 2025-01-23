@@ -1,8 +1,8 @@
-import { useEffect, useRef, MouseEvent } from 'react';
+import { useEffect, useRef, PointerEvent } from 'react';
 import { Point } from '@troublepainter/core';
 import { CURSOR_LENGTH, CURSOR_WIDTH, DELETE_INTERVAL } from '@/constants/backgroundConstants';
 import { getCanvasContext } from '@/utils/getCanvasContext';
-import { getDrawPoint } from '@/utils/getDrawPoint';
+import { getDrawPoint_Pointer } from '@/utils/getDrawPoint';
 
 const Background = ({ className }: { className: string }) => {
   const cursorCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -74,17 +74,16 @@ const Background = ({ className }: { className: string }) => {
     };
   }, []);
 
-  const handleMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = (e: PointerEvent<HTMLCanvasElement>) => {
     currentTimestamp.current = performance.now();
     if (currentTimestamp.current - lastTimestamp.current < 16) return;
     lastTimestamp.current = currentTimestamp.current;
 
-    const { canvas } = getCanvasContext(cursorCanvasRef);
-    const point = getDrawPoint(e, canvas);
+    const point = getDrawPoint_Pointer(e);
     pointsRef.current.push(point);
   };
 
-  const handleMouseLeave = () => {
+  const handlePointerLeave = () => {
     const { canvas, ctx } = getCanvasContext(cursorCanvasRef);
     pointsRef.current.length = 0;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -95,8 +94,8 @@ const Background = ({ className }: { className: string }) => {
       <canvas
         ref={cursorCanvasRef}
         className="absolute h-full w-full cursor-none"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
       />
     </div>
   );
