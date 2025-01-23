@@ -7,8 +7,10 @@ on:
       - 'client/**'
       - 'core/**'
       - 'nginx.conf'
+      - 'default.conf'
       - '.github/workflows/client-ci-cd.yml'
       - 'Dockerfile.nginx'
+      - 'docker-compose.yml'
 
 jobs:
   ci-cd:
@@ -64,7 +66,11 @@ jobs:
           username: mira
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/mira/web30-stop-troublepainter
+            cd /home/mira/refactor-web30-stop-troublepainter
             export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            export REDIS_HOST=${{ secrets.REDIS_HOST }}
+            export REDIS_PORT=${{ secrets.REDIS_PORT }}
+            export CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}
+            export CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/troublepainter-nginx:latest
             docker compose up -d nginx
