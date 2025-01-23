@@ -45,6 +45,7 @@ export const useBackgroundMusic = () => {
 
   useEffect(() => {
     audioRef.current = new Audio(CDN.BACKGROUND_MUSIC);
+    audioRef.current.preload = 'metadata';
     audioRef.current.loop = true;
     audioRef.current.volume = volume;
 

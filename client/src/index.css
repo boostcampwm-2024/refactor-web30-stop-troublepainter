@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'NeoDunggeunmo Pro';
+  src:
+    url('https://cdn.jsdelivr.net/gh/neodgm/neodgm-pro-webfont@1.020/neodgm_pro/neodgm_pro.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/neodgm/neodgm-pro-webfont@1.020/neodgm_pro/neodgm_pro.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/neodgm/neodgm-pro-webfont@1.020/neodgm_pro/neodgm_pro.ttf') format('truetype');
+  font-weight: normal;
+  font-display: swap;
+}
+
 @layer components {
   /* 스크롤바 hide 기능 */
   /* Hide scrollbar for Chrome, Safari and Opera */

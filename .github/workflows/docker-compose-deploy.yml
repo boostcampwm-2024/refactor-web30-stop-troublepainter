@@ -2,7 +2,7 @@ name: Docker Compose Update
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
     paths:
       - 'docker-compose.yml'
       - '.github/workflows/docker-compose-deploy.yml'
@@ -18,7 +18,11 @@ jobs:
           username: mira
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/mira/web30-stop-troublepainter
+            cd /home/mira/refactor-web30-stop-troublepainter
             export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            export REDIS_HOST=${{ secrets.REDIS_HOST }}
+            export REDIS_PORT=${{ secrets.REDIS_PORT }}
+            export CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}
+            export CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}
             docker compose pull
             docker compose up -d
