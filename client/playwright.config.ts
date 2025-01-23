@@ -11,10 +11,9 @@ export default defineConfig({
   projects: [
     {
       name: 'lighthouse',
-      testMatch: 'lighthouse.test.ts',
+      testMatch: 'lighthouse/lighthouse.test.ts',
     },
   ],
-
   webServer: {
     command: 'pnpm start',
     port: 4173,
