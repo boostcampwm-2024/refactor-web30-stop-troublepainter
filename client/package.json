@@ -15,7 +15,8 @@
     "check": "pnpm format:check && pnpm lint:strict",
     "fix": "pnpm format && pnpm lint:fix",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "lighthouse": "playwright test --project=lighthouse"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.10.1",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^3.2.2",
     "@eslint/js": "^9.13.0",
+    "@playwright/test": "^1.49.1",
     "@storybook/addon-essentials": "^8.4.1",
     "@storybook/addon-interactions": "^8.4.1",
     "@storybook/addon-onboarding": "^8.4.1",
@@ -61,6 +63,7 @@
     "eslint-plugin-react-refresh": "^0.4.14",
     "eslint-plugin-storybook": "^0.10.2",
     "globals": "^15.11.0",
+    "playwright-lighthouse": "^4.0.0",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",
