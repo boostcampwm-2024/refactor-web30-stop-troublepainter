@@ -107,8 +107,6 @@ export class GameGateway implements OnGatewayDisconnect {
 
   @SubscribeMessage('gameStart')
   async handleGameStart(@ConnectedSocket() client: Socket) {
-    console.log('Game Start');
-
     const { playerId, roomId } = client.data;
     if (!playerId || !roomId) throw new BadRequestException('Room ID and Player ID are required');
 

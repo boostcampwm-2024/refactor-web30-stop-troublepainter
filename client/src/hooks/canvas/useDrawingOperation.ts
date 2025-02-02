@@ -82,29 +82,54 @@ export const useDrawingOperation = (
     [currentColor, brushSize],
   );
 
-  const drawStroke = useCallback((drawingData: DrawingData) => {
+  const drawStroke = (drawingData: DrawingData): void => {
     const { ctx } = getCanvasContext(canvasRef);
     const { points, style } = drawingData;
 
-    if (points.length === 0) return;
-
+    // 스타일 설정
     ctx.strokeStyle = style.color;
     ctx.fillStyle = style.color;
     ctx.lineWidth = style.width;
-    ctx.beginPath();
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
-    if (points.length === 1) {
-      const point = points[0];
-      ctx.arc(point.x, point.y, style.width / 2, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      ctx.moveTo(points[0].x, points[0].y);
-      points.slice(1).forEach((point) => ctx.lineTo(point.x, point.y));
-      ctx.stroke();
+    // path 설정
+    ctx.beginPath();
+
+    // 점의 개수에 따른 그리기 처리
+    switch (points.length) {
+      case 1: {
+        // 단일 점은 원으로 표현
+        ctx.arc(points[0].x, points[0].y, style.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+        break;
+      }
+      case 2: {
+        // 두 점은 직선으로 연결
+        ctx.moveTo(points[0].x, points[0].y);
+        ctx.lineTo(points[1].x, points[1].y);
+        ctx.stroke();
+        break;
+      }
+      case 3: {
+        // 세 점은 부드러운 곡선으로 연결
+        const [p0, p1, p2] = points;
+
+        // 비트 연산을 사용한 중간점 계산
+        // x >> 1은 x / 2와 동일하지만 더 빠름
+        const mid1x = (p0.x + p1.x) >> 1;
+        const mid1y = (p0.y + p1.y) >> 1;
+        const mid2x = (p1.x + p2.x) >> 1;
+        const mid2y = (p1.y + p2.y) >> 1;
+
+        // 중간점 객체 생성을 피하고 직접 좌표 사용
+        ctx.moveTo(mid1x, mid1y);
+        ctx.quadraticCurveTo(p1.x, p1.y, mid2x, mid2y);
+        ctx.stroke();
+        break;
+      }
     }
-  }, []);
+  };
 
   const redrawCanvas = useCallback(() => {
     if (!state.crdtRef.current) return;
@@ -114,7 +139,7 @@ export const useDrawingOperation = (
 
     const activeStrokes = state.crdtRef.current.getActiveStrokes();
     for (const { stroke } of activeStrokes) {
-      if (stroke.points.length > 2) applyFill(stroke);
+      if (stroke.points.length > 3) applyFill(stroke);
       else drawStroke(stroke);
     }
   }, [drawStroke]);
