@@ -188,6 +188,22 @@ export class GameGateway implements OnGatewayDisconnect {
     });
   }
 
+  @SubscribeMessage('checkDrawing')
+  async handleCheckDrawing(@ConnectedSocket() client: Socket, @MessageBody() data: { image: string }) {
+    const roomId = client.data.roomId;
+    const playerId = client.data.playerId;
+
+    if (!roomId || !playerId) throw new BadRequestException('Room ID and Player ID are required');
+
+    if (!data.image) {
+      throw new BadRequestException('Image data is required');
+    }
+
+    const result = await this.gameService.checkDrawing(data.image);
+
+    this.server.in(roomId).emit('drawingChecked', result);
+  }
+
   @SubscribeMessage('checkAnswer')
   async handleCheckAnswer(@ConnectedSocket() client: Socket, @MessageBody() data: { answer: string }) {
     const roomId = client.data.roomId;

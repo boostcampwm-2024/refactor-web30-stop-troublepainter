@@ -13,6 +13,7 @@ import {
 } from 'src/exceptions/game.exception';
 import { RoomStatus, PlayerStatus, PlayerRole, Difficulty } from 'src/common/enums/game.status.enum';
 import { ClovaClient } from 'src/common/clova-client';
+import { OpenAIService } from 'src/common/services/openai/openai.service';
 
 @Injectable()
 export class GameService {
@@ -39,6 +40,7 @@ export class GameService {
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly clovaClient: ClovaClient,
+    private readonly openaiService: OpenAIService,
   ) {}
 
   async createRoom(): Promise<string> {
@@ -364,6 +366,11 @@ export class GameService {
     await this.gameRepository.updateRoom(roomId, { status: RoomStatus.GUESSING });
 
     return RoomStatus.GUESSING;
+  }
+
+  async checkDrawing(image: string) {
+    const answer = '기린';
+    return await this.openaiService.checkDrawing(image, answer);
   }
 
   async checkAnswer(roomId: string, playerId: string, answer: string) {
