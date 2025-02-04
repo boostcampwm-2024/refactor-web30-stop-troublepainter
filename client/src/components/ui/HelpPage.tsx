@@ -1,21 +1,9 @@
 import { useEffect } from 'react';
-import { DotLottie, DotLottieReact } from '@lottiefiles/dotlottie-react';
-import { PageData } from '@/types/help.types';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { HelpPageProps } from '@/types/help.types';
 import { cn } from '@/utils/cn';
 
-const HelpPage = ({
-  pageData,
-  isModalOpened,
-  dotLottieRefCallback,
-  pagenation,
-  setPageIndex,
-}: {
-  pageData: PageData;
-  isModalOpened: boolean;
-  dotLottieRefCallback: (dot: DotLottie) => void;
-  pagenation: boolean[];
-  setPageIndex: (index: number) => void;
-}) => {
+const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pagenation, setPageIndex }: HelpPageProps) => {
   useEffect(() => {
     const loadAnimation = async () => {
       const response = await fetch(pageData.img);
