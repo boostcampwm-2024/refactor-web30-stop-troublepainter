@@ -8,6 +8,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - CLOVA_API_KEY=${CLOVA_API_KEY}
       - CLOVA_GATEWAY_KEY=${CLOVA_GATEWAY_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - app_network
     restart: unless-stopped
@@ -21,6 +22,7 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - CLOVA_API_KEY=${CLOVA_API_KEY}
       - CLOVA_GATEWAY_KEY=${CLOVA_GATEWAY_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - app_network
     restart: unless-stopped

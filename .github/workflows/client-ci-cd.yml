@@ -72,5 +72,6 @@ jobs:
             export REDIS_PORT=${{ secrets.REDIS_PORT }}
             export CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}
             export CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}
+            export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/troublepainter-nginx:latest
             docker compose up -d nginx
