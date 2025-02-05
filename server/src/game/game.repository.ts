@@ -9,7 +9,10 @@ export class GameRepository {
 
   async createRoom(roomId: string, room: Room, settings: RoomSettings) {
     const multi = this.redisService.multi();
-    multi.hset(`room:${roomId}`, room);
+    multi.hset(`room:${roomId}`, {
+      ...room,
+      words: Array.isArray(room.words) ? room.words.join(',') : '',
+    });
     multi.hset(`room:${roomId}:settings`, settings);
     await multi.exec();
   }
@@ -24,6 +27,7 @@ export class GameRepository {
       status: room.status as RoomStatus,
       currentRound: parseInt(room.currentRound, 10) || 0,
       currentWord: room.currentWord === '' ? null : room.currentWord,
+      words: room.words ? room.words.split(',') : [],
     } as Room;
   }
 

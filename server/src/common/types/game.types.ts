@@ -14,7 +14,7 @@ export interface Room {
   hostId: string | null;
   status: RoomStatus;
   currentRound?: number;
-  currentWord?: string;
+  words?: string[];
 }
 
 export interface RoomSettings {
