@@ -368,8 +368,12 @@ export class GameService {
     return RoomStatus.GUESSING;
   }
 
-  async checkDrawing(image: string) {
-    const answer = '기린';
+  async checkDrawing(roomId: string, image: string) {
+    const room = await this.gameRepository.getRoom(roomId);
+    if (!room) throw new RoomNotFoundException('Room not found');
+
+    const answer = room.words[room.currentRound - 1].trim();
+
     return await this.openaiService.checkDrawing(image, answer);
   }
 

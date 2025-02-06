@@ -212,7 +212,7 @@ export class GameGateway implements OnGatewayDisconnect {
       throw new BadRequestException('Image data is required');
     }
 
-    const result = await this.gameService.checkDrawing(data.image);
+    const result = await this.gameService.checkDrawing(roomId, data.image);
 
     this.server.in(roomId).emit('drawingChecked', result);
   }
