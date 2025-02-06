@@ -13,6 +13,7 @@ import {
 } from 'src/exceptions/game.exception';
 import { RoomStatus, PlayerStatus, PlayerRole, Difficulty } from 'src/common/enums/game.status.enum';
 import { ClovaClient } from 'src/common/clova-client';
+import { OpenAIService } from 'src/common/services/openai/openai.service';
 
 @Injectable()
 export class GameService {
@@ -34,11 +35,11 @@ export class GameService {
     '개발자',
     '대통령',
   ];
-  private words: string[] = [];
 
   constructor(
     private readonly gameRepository: GameRepository,
     private readonly clovaClient: ClovaClient,
+    private readonly openaiService: OpenAIService,
   ) {}
 
   async createRoom(): Promise<string> {
@@ -48,7 +49,7 @@ export class GameService {
       hostId: null,
       status: RoomStatus.WAITING,
       currentRound: 0,
-      currentWord: null,
+      words: [],
     };
 
     await this.gameRepository.createRoom(roomId, room, this.DEFAULT_ROOM_SETTINGS);
@@ -224,7 +225,7 @@ export class GameService {
   }
 
   async initializeGame(roomId: string) {
-    await this.gameRepository.updateRoom(roomId, { status: RoomStatus.WAITING, currentRound: 0, currentWord: null });
+    await this.gameRepository.updateRoom(roomId, { status: RoomStatus.WAITING, currentRound: 0, words: [] });
     const players = await this.gameRepository.getRoomPlayers(roomId);
     await Promise.all(
       players.map(({ playerId }) =>
@@ -274,7 +275,9 @@ export class GameService {
     }
 
     const roomSettings = await this.gameRepository.getRoomSettings(roomId);
-    this.words = await this.fetchWords(roomSettings.totalRounds);
+    const words = await this.fetchWords(roomSettings.totalRounds);
+
+    await this.gameRepository.updateRoom(roomId, { words });
   }
 
   private async fetchWords(totalRounds: number): Promise<string[]> {
@@ -302,7 +305,6 @@ export class GameService {
 
     const roomUpdates = {
       status: RoomStatus.DRAWING,
-      currentWord: this.words[room.currentRound],
       currentRound: room.currentRound + 1,
     };
     await this.gameRepository.updateRoom(roomId, { ...roomUpdates });
@@ -366,6 +368,11 @@ export class GameService {
     return RoomStatus.GUESSING;
   }
 
+  async checkDrawing(image: string) {
+    const answer = '기린';
+    return await this.openaiService.checkDrawing(image, answer);
+  }
+
   async checkAnswer(roomId: string, playerId: string, answer: string) {
     const [room, players] = await Promise.all([
       this.gameRepository.getRoom(roomId),
@@ -384,7 +391,8 @@ export class GameService {
       throw new ForbiddenException('Painters and Devils are not allowed to submit answers');
     }
 
-    const isCorrect = room.currentWord.trim() === answer.trim();
+    const word = room.words[room.currentRound - 1].trim();
+    const isCorrect = word === answer.trim();
     if (!isCorrect) return { isCorrect };
 
     const updatedPlayers = this.calculateScores(players, playerId);
@@ -400,7 +408,7 @@ export class GameService {
     return {
       isCorrect,
       roundNumber: room.currentRound,
-      word: room.currentWord,
+      word,
       winners: [winner, ...painters],
       players: updatedPlayers,
     };
@@ -453,7 +461,7 @@ export class GameService {
 
     return {
       roundNumber: room.currentRound,
-      word: room.currentWord,
+      word: room.words[room.currentRound - 1],
       winners: [winner],
       players: updatedPlayers,
     };

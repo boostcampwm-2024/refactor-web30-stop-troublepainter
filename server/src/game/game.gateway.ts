@@ -42,9 +42,14 @@ export class GameGateway implements OnGatewayDisconnect {
 
     await client.join(room.roomId);
 
-    client.to(room.roomId).emit('playerJoined', { room, roomSettings, players });
+    const { words, ...rest } = room;
+    void words;
 
-    this.server.to(client.id).emit('joinedRoom', { room, roomSettings, playerId: player.playerId, players });
+    client.to(room.roomId).emit('playerJoined', { room: { ...rest, currentWord: null }, roomSettings, players });
+
+    this.server
+      .to(client.id)
+      .emit('joinedRoom', { room: { ...rest, currentWord: null }, roomSettings, playerId: player.playerId, players });
   }
 
   @SubscribeMessage('test:joinRoom')
@@ -59,9 +64,14 @@ export class GameGateway implements OnGatewayDisconnect {
 
     await client.join(room.roomId);
 
-    client.to(room.roomId).emit('playerJoined', { room, roomSettings, players });
+    const { words, ...rest } = room;
+    void words;
 
-    this.server.to(client.id).emit('joinedRoom', { room, roomSettings, playerId: player.playerId, players });
+    client.to(room.roomId).emit('playerJoined', { room: { ...rest, currentWord: null }, roomSettings, players });
+
+    this.server
+      .to(client.id)
+      .emit('joinedRoom', { room: { ...rest, currentWord: null }, roomSettings, playerId: player.playerId, players });
   }
 
   @SubscribeMessage('reconnect')
@@ -75,8 +85,11 @@ export class GameGateway implements OnGatewayDisconnect {
 
     const { room, players, roomSettings } = await this.gameService.reconnect(roomId, playerId);
 
+    const { words, ...rest } = room;
+    void words;
+
     this.server.to(client.id).emit('joinedRoom', {
-      room,
+      room: { ...rest, currentWord: null },
       roomSettings,
       playerId,
       players,
@@ -166,7 +179,7 @@ export class GameGateway implements OnGatewayDisconnect {
       if (player.role === PlayerRole.PAINTER || player.role === PlayerRole.DEVIL) {
         this.server.to(playerSocket.id).emit('drawingGroupRoundStarted', {
           ...basePayload,
-          word: room.currentWord,
+          word: room.words[room.currentRound - 1],
         });
       } else {
         this.server.to(playerSocket.id).emit('guesserRoundStarted', {
@@ -186,6 +199,22 @@ export class GameGateway implements OnGatewayDisconnect {
         onTimeUp: () => resolve(),
       });
     });
+  }
+
+  @SubscribeMessage('checkDrawing')
+  async handleCheckDrawing(@ConnectedSocket() client: Socket, @MessageBody() data: { image: string }) {
+    const roomId = client.data.roomId;
+    const playerId = client.data.playerId;
+
+    if (!roomId || !playerId) throw new BadRequestException('Room ID and Player ID are required');
+
+    if (!data.image) {
+      throw new BadRequestException('Image data is required');
+    }
+
+    const result = await this.gameService.checkDrawing(data.image);
+
+    this.server.in(roomId).emit('drawingChecked', result);
   }
 
   @SubscribeMessage('checkAnswer')

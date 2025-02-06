@@ -8,6 +8,7 @@ on:
       - 'core/**'
       - '.github/workflows/server-ci-cd.yml'
       - 'Dockerfile.server'
+      - 'docker-compose.yml'
 
 jobs:
   ci-cd:
@@ -39,6 +40,7 @@ jobs:
           echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
           echo "CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}" >> .env
           echo "CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}" >> .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
 
       - name: Run tests
         run: pnpm --filter server test | true
@@ -64,6 +66,7 @@ jobs:
             REDIS_PORT=${{ secrets.REDIS_PORT }}
             CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}
             CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v1.0.0
@@ -78,5 +81,6 @@ jobs:
             export REDIS_PORT=${{ secrets.REDIS_PORT }}
             export CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}
             export CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}
+            export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/troublepainter-server:latest
             docker compose up -d server1 server2
