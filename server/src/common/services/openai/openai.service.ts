@@ -1,19 +1,61 @@
 import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
-
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 @Injectable()
 export class OpenAIService {
   private readonly openai: OpenAI;
+  private readonly objectStorage: S3Client;
 
   constructor(private readonly configService: ConfigService) {
     this.openai = new OpenAI({
       apiKey: this.configService.get<string>('OPENAI_API_KEY'),
     });
+
+    this.objectStorage = new S3Client({
+      endpoint: this.configService.get<string>('NCP_STORAGE_ENDPOINT'),
+      region: 'kr-standard',
+      credentials: {
+        accessKeyId: this.configService.get<string>('NCP_ACCESS_KEY'),
+        secretAccessKey: this.configService.get<string>('NCP_SECRET_KEY'),
+      },
+      forcePathStyle: true,
+    });
   }
 
-  async checkDrawing(image: string, answer: string) {
+  private async uploadImageToStorage(image: Buffer): Promise<{ url: string; key: string }> {
+    const key = `temp-drawing/${Date.now()}-${Math.random().toString(36).substring(7)}.png`;
+
+    await this.objectStorage.send(
+      new PutObjectCommand({
+        Bucket: this.configService.get<string>('NCP_BUCKET_NAME'),
+        Key: key,
+        Body: image,
+        ContentType: 'image/png',
+        ACL: 'public-read',
+      }),
+    );
+
+    const url = `${this.configService.get<string>('NCP_STORAGE_ENDPOINT')}/${this.configService.get<string>('NCP_BUCKET_NAME')}/${key}`;
+    return { url, key };
+  }
+
+  private async deleteImageFromStorage(key: string): Promise<void> {
+    await this.objectStorage.send(
+      new DeleteObjectCommand({
+        Bucket: this.configService.get<string>('NCP_BUCKET_NAME'),
+        Key: key,
+      }),
+    );
+  }
+
+  async checkDrawing(image: Buffer, answer: string) {
+    let imageKey: string | null = null;
+
     try {
+      const { url, key } = await this.uploadImageToStorage(image);
+      imageKey = key;
+
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
@@ -32,7 +74,7 @@ export class OpenAIService {
               {
                 type: 'image_url',
                 image_url: {
-                  url: `data:image/png;base64,${image}`,
+                  url: url,
                 },
               },
               {
@@ -67,8 +109,15 @@ export class OpenAIService {
         frequency_penalty: 0,
         presence_penalty: 0,
       });
-      return JSON.parse(response.choices[0].message.content);
+      const result = JSON.parse(response.choices[0].message.content);
+
+      await this.deleteImageFromStorage(key);
+
+      return result;
     } catch (error) {
+      if (imageKey) {
+        await this.deleteImageFromStorage(imageKey).catch((error) => console.error('Failed to delete image: ', error));
+      }
       console.error('OpenAI API Error:', error);
     }
   }
