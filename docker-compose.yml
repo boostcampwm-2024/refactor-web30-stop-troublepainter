@@ -9,6 +9,10 @@ services:
       - CLOVA_API_KEY=${CLOVA_API_KEY}
       - CLOVA_GATEWAY_KEY=${CLOVA_GATEWAY_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NCP_STORAGE_ENDPOINT=${NCP_STORAGE_ENDPOINT}
+      - NCP_BUCKET_NAME=${NCP_BUCKET_NAME}
+      - NCP_ACCESS_KEY=${NCP_ACCESS_KEY}
+      - NCP_SECRET_KEY=${NCP_SECRET_KEY}
     networks:
       - app_network
     restart: unless-stopped
@@ -23,6 +27,10 @@ services:
       - CLOVA_API_KEY=${CLOVA_API_KEY}
       - CLOVA_GATEWAY_KEY=${CLOVA_GATEWAY_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NCP_STORAGE_ENDPOINT=${NCP_STORAGE_ENDPOINT}
+      - NCP_BUCKET_NAME=${NCP_BUCKET_NAME}
+      - NCP_ACCESS_KEY=${NCP_ACCESS_KEY}
+      - NCP_SECRET_KEY=${NCP_SECRET_KEY}
     networks:
       - app_network
     restart: unless-stopped

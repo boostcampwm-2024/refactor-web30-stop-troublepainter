@@ -73,5 +73,9 @@ jobs:
             export CLOVA_API_KEY=${{ secrets.CLOVA_API_KEY }}
             export CLOVA_GATEWAY_KEY=${{ secrets.CLOVA_GATEWAY_KEY }}
             export OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            export NCP_STORAGE_ENDPOINT=${{ secrets.NCP_STORAGE_ENDPOINT }}
+            export NCP_BUCKET_NAME=${{ secrets.NCP_BUCKET_NAME }}
+            export NCP_ACCESS_KEY=${{ secrets.NCP_ACCESS_KEY }}
+            export NCP_SECRET_KEY=${{ secrets.NCP_SECRET_KEY }}
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/troublepainter-nginx:latest
             docker compose up -d nginx
