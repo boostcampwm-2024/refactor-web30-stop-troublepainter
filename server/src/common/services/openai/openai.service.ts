@@ -72,4 +72,35 @@ export class OpenAIService {
       console.error('OpenAI API Error:', error);
     }
   }
+
+  // 제시어 생성
+  async getDrawingWords(difficulty: string, count: number, category: string): Promise<string[]> {
+    try {
+      const response = await this.openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content:
+              '당신은 창의적인 드로잉 게임의 출제자, 재밌고 다양한 단어들을 아래처럼 생각해 출제.\n1. 추상적X, 30초 내 그리기 가능성 생각\n2. 방해 요소 존재 게임성 생각\n3. 초등학생 수준 난이도인지 생각\n4. 해당하는 단어 선택\n\n<Input>\n{난이도}, {개수}, {카테고리}\n<Output>\n부연설명없이 단어만, 단어(Meme)를 쉼표로 구분 및 나열\nex) `사과, 컵, 우산, 모자, 엄마`',
+          },
+          {
+            role: 'user',
+            content: `난이도=${difficulty},개수=${count},카테고리=${category}`,
+          },
+        ],
+        response_format: { type: 'text' },
+        temperature: 0,
+        max_tokens: 128,
+        top_p: 1,
+        frequency_penalty: 2,
+        presence_penalty: 2,
+      });
+
+      return response.choices[0].message.content.split(',').map((word) => word.trim());
+    } catch (error) {
+      console.error('OpenAI API Error:', error);
+      return []; // 에러 시 빈 배열 반환
+    }
+  }
 }
