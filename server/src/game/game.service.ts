@@ -275,15 +275,15 @@ export class GameService {
     }
 
     const roomSettings = await this.gameRepository.getRoomSettings(roomId);
-    const words = await this.fetchWords(roomSettings.totalRounds);
+    const words = await this.fetchWords(roomSettings.totalRounds, roomSettings.category);
 
     await this.gameRepository.updateRoom(roomId, { words });
   }
 
-  private async fetchWords(totalRounds: number): Promise<string[]> {
+  private async fetchWords(totalRounds: number, category?: string): Promise<string[]> {
     let attempts = 0;
     while (attempts++ < 10) {
-      const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, '해리 포터');
+      const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, category);
       console.log(words);
       if (words.length === totalRounds) return words;
     }
