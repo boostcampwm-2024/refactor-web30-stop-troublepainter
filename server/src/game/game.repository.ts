@@ -54,6 +54,7 @@ export class GameRepository {
       maxPlayers: parseInt(settings.maxPlayers, 10),
       totalRounds: parseInt(settings.totalRounds, 10),
       drawTime: parseInt(settings.drawTime, 10),
+      category: settings.category,
     } as RoomSettings;
   }
 

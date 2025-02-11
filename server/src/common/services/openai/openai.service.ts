@@ -74,7 +74,10 @@ export class OpenAIService {
   }
 
   // 제시어 생성
-  async getDrawingWords(difficulty: string, count: number, category: string): Promise<string[]> {
+  async getDrawingWords(difficulty: string, count: number, category?: string): Promise<string[]> {
+    const categories = ['영화', '음식', '일상용품', '스포츠', '동물', '교통수단', '캐릭터', '악기', '직업', 'IT'];
+    const basicCategories = categories.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 2) + 2);
+
     try {
       const response = await this.openai.chat.completions.create({
         model: 'gpt-4o-mini',
@@ -86,7 +89,7 @@ export class OpenAIService {
           },
           {
             role: 'user',
-            content: `난이도=${difficulty},개수=${count},카테고리=${category}`,
+            content: `난이도=${difficulty},개수=${count},카테고리=${category ?? basicCategories.join(',')}`,
           },
         ],
         response_format: { type: 'text' },
