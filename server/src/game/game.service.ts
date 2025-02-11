@@ -12,7 +12,7 @@ import {
   GameAlreadyStartedException,
 } from 'src/exceptions/game.exception';
 import { RoomStatus, PlayerStatus, PlayerRole, Difficulty } from 'src/common/enums/game.status.enum';
-import { ClovaClient } from 'src/common/clova-client';
+// import { ClovaClient } from 'src/common/clova-client';
 import { OpenAIService } from 'src/common/services/openai/openai.service';
 
 @Injectable()
@@ -38,7 +38,7 @@ export class GameService {
 
   constructor(
     private readonly gameRepository: GameRepository,
-    private readonly clovaClient: ClovaClient,
+    // private readonly clovaClient: ClovaClient,
     private readonly openaiService: OpenAIService,
   ) {}
 
@@ -283,7 +283,8 @@ export class GameService {
   private async fetchWords(totalRounds: number): Promise<string[]> {
     let attempts = 0;
     while (attempts++ < 10) {
-      const words = await this.clovaClient.getDrawingWords(Difficulty.NORMAL, totalRounds);
+      const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, '해리 포터');
+      console.log(words);
       if (words.length === totalRounds) return words;
     }
     return GameService.DEFAULT_WORDS.slice(0, totalRounds);
