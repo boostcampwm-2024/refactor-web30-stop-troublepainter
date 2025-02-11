@@ -368,7 +368,7 @@ export class GameService {
     return RoomStatus.GUESSING;
   }
 
-  async checkDrawing(roomId: string, image: string) {
+  async checkDrawing(roomId: string, image: Buffer) {
     const room = await this.gameRepository.getRoom(roomId);
     if (!room) throw new RoomNotFoundException('Room not found');
 

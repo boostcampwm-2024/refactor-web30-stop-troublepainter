@@ -202,7 +202,7 @@ export class GameGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('checkDrawing')
-  async handleCheckDrawing(@ConnectedSocket() client: Socket, @MessageBody() data: { image: string }) {
+  async handleCheckDrawing(@ConnectedSocket() client: Socket, @MessageBody() data: { image: Buffer }) {
     const roomId = client.data.roomId;
     const playerId = client.data.playerId;
 
