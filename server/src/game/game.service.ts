@@ -100,10 +100,8 @@ export class GameService {
   private generateNickname() {
     const adjectives = [
       '홀리몰리한',
-      '소심한',
-      '반짝이는',
-      '배고픈',
-      '무례한',
+      '감동실화',
+      '극대노한',
       '야근한',
       '삐딱한',
       '넘사벽인',
@@ -112,15 +110,25 @@ export class GameService {
       '억울킹',
       '극한의',
       '완벽한',
-      '뻔뻔한',
+      '우주최강',
       '허세쩌는',
+      '멘탈붕괴된',
+      '꿀잼인',
+      '억까당한',
+      '오점없는',
+      '현직백수',
+      '피지컬쩌는',
+      '갓벽한',
+      '존맛탱인',
+      '렉걸린',
+      '만렙인',
+      '빡종한',
+      'Chill한',
     ];
 
     const nouns = [
       '미라',
       '코뿔소',
-      '네모',
-      '곰돌이',
       '루저',
       '파괴자',
       '컨셉러',
@@ -128,11 +136,19 @@ export class GameService {
       '트롤러',
       '냥이',
       '뉴비',
-      '폭탄',
       '그림봇',
-      '킬러',
-      '전문가',
       '패배장인',
+      '고인물',
+      '칠가이',
+      '현자',
+      '탈주닌자',
+      '아싸',
+      '겜돌이',
+      '빡겜러',
+      '츄르도둑',
+      '케첩도둑',
+      '밥도둑',
+      '쿠쿠다스',
     ];
 
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
@@ -282,7 +298,7 @@ export class GameService {
 
   private async fetchWords(totalRounds: number, category?: string): Promise<string[]> {
     let attempts = 0;
-    while (attempts++ < 10) {
+    while (attempts++ < 5) {
       const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, category);
       console.log(words);
       if (words.length === totalRounds) return words;
