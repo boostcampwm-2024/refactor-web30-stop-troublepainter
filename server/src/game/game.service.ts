@@ -300,8 +300,8 @@ export class GameService {
     let attempts = 0;
     while (attempts++ < 5) {
       const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, category);
-      console.log(words);
       if (words.length === totalRounds) return words;
+      if (words[0] === '부적절') return GameService.DEFAULT_WORDS.slice(0, totalRounds);
     }
     return GameService.DEFAULT_WORDS.slice(0, totalRounds);
   }
