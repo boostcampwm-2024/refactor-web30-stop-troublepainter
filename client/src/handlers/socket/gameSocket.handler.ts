@@ -1,3 +1,4 @@
+import { CheckDrawingRequest } from 'node_modules/@troublepainter/core';
 import type {
   CRDTSyncMessage,
   CheckAnswerRequest,
@@ -64,6 +65,16 @@ export const gameSocketHandlers = {
 
     return new Promise((resolve) => {
       socket.emit('submittedDrawing', { drawing });
+      resolve();
+    });
+  },
+
+  checkDrawing: (request: CheckDrawingRequest): Promise<void> => {
+    const socket = useSocketStore.getState().sockets.game;
+    if (!socket) throw new Error('Socket not connected');
+
+    return new Promise((resolve) => {
+      socket.emit('checkDrawing', request);
       resolve();
     });
   },
