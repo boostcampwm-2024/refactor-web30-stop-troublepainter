@@ -1,8 +1,12 @@
 import { HTMLAttributes, memo, useCallback, useEffect, useState } from 'react';
 import { RoomSettings } from '@troublepainter/core';
+import { CategoryModalContentContent } from '@/components/room-setting/CategoryModalContent';
 import { SettingContent } from '@/components/room-setting/SettingContent';
+import { Button } from '@/components/ui/Button';
+import { Modal } from '@/components/ui/Modal';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
+import { useModal } from '@/hooks/useModal';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 import { cn } from '@/utils/cn';
 
@@ -27,6 +31,8 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
   const roomSettings = useGameSocketStore((state) => state.roomSettings);
   const isHost = useGameSocketStore((state) => state.isHost);
   const actions = useGameSocketStore((state) => state.actions);
+  // 모달
+  const { isModalOpened, openModal, closeModal, handleKeyDown } = useModal();
 
   const [selectedValues, setSelectedValues] = useState<RoomSettings>(
     roomSettings ?? {
@@ -56,17 +62,39 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
     [selectedValues, actions],
   );
 
+  // 카테고리
+  const headerText = roomSettings?.category ? roomSettings.category : 'Setting';
+
   return (
     <section
       className={cn('flex w-full flex-col border-0 border-violet-950 sm:rounded-xl sm:border-2', className)}
       {...props}
     >
       {/* Setting title */}
-      <div className="flex h-14 w-full items-center justify-center border-0 border-violet-950 bg-violet-500 sm:h-16 sm:rounded-t-xl sm:border-b-2">
-        <h2 className="text-2xl text-white text-stroke-md sm:translate-y-1 lg:text-3xl">Setting</h2>
+      <div className="flex h-14 w-full items-center justify-between border-0 border-violet-950 bg-violet-500 px-4 sm:h-16 sm:rounded-t-xl sm:border-b-2">
+        <h2 className="text-2xl text-white text-stroke-md sm:translate-y-1 lg:text-3xl">{headerText}</h2>
+        {isHost && (
+          <Button
+            variant="secondary"
+            size={'text'}
+            onClick={openModal}
+            className="h-10 w-24 text-lg lg:h-10 lg:w-28 lg:text-xl"
+          >
+            카테고리
+          </Button>
+        )}
       </div>
 
       {/* Setting content */}
+      <Modal
+        title="카테고리 설정"
+        isModalOpened={isModalOpened}
+        closeModal={closeModal}
+        handleKeyDown={handleKeyDown} // handleKeyDown 추가
+        className="min-w-72 max-w-sm"
+      >
+        <CategoryModalContentContent isModalOpened={isModalOpened} closeModal={closeModal} />
+      </Modal>
       <SettingContent
         settings={ROOM_SETTINGS}
         values={selectedValues}
