@@ -12,8 +12,9 @@ const QuizStageContainer = () => {
   const room = useGameSocketStore((state) => state.room);
   const roomSettings = useGameSocketStore((state) => state.roomSettings);
   const roundAssignedRole = useGameSocketStore((state) => state.roundAssignedRole);
+  const isHost = useGameSocketStore((state) => state.isHost);
 
-  if (!room || !roomSettings) return null;
+  if (!room || !roomSettings || isHost === null) return null;
 
   const timers = useTimer();
 
@@ -85,6 +86,7 @@ const QuizStageContainer = () => {
         role={roundAssignedRole || PlayerRole.GUESSER}
         maxPixels={DEFAULT_MAX_PIXELS}
         isHidden={shouldHideCanvas}
+        isHost={isHost}
       />
     </>
   );

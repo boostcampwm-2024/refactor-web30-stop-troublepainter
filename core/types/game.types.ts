@@ -46,3 +46,10 @@ export enum TerminationType {
   SUCCESS = 'SUCCESS',
   PLAYER_DISCONNECT = 'PLAYER_DISCONNECT',
 }
+
+export enum Cheating {
+  OK = 'OK',
+  LENGTH = 'LENGTH',
+  INITIAL = 'INITIAL',
+  FULL_ANSWER = 'FULL_ANSWER',
+}

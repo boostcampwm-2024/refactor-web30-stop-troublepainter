@@ -12,7 +12,9 @@ import {
   PlayerStatus,
   RoomEndResponse,
   TerminationType,
+  Cheating,
 } from '@troublepainter/core';
+import { DrawingCheckedResponse } from '@troublepainter/core';
 import { useNavigate, useParams } from 'react-router-dom';
 import entrySound from '@/assets/sounds/entry-sound-effect.mp3';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
@@ -20,6 +22,7 @@ import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 import { SocketNamespace } from '@/stores/socket/socket.config';
 import { useSocketStore } from '@/stores/socket/socket.store';
 import { useTimerStore } from '@/stores/timer.store';
+import { useToastStore } from '@/stores/toast.store';
 import { checkTimerDifference } from '@/utils/checkTimerDifference';
 import { playerIdStorageUtils } from '@/utils/playerIdStorage';
 import { SOUND_IDS, SoundManager } from '@/utils/soundManager';
@@ -75,6 +78,7 @@ export const useGameSocket = () => {
   const { sockets, actions: socketActions } = useSocketStore();
   const gameActions = useGameSocketStore((state) => state.actions);
   const timerActions = useTimerStore((state) => state.actions);
+  const toastActions = useToastStore((state) => state.actions);
   const navigate = useNavigate();
 
   // 연결 + 재연결 시도
@@ -218,6 +222,27 @@ export const useGameSocket = () => {
         gameActions.resetRound();
         gameActions.updateGameTerminateType(terminationType);
         navigate(`/game/${roomId}/result`, { replace: true });
+      },
+
+      drawingChecked: (response: DrawingCheckedResponse) => {
+        const { result } = response;
+        const roomStatus = useGameSocketStore.getState().room?.status;
+
+        if (result === 'OK' || roomStatus !== RoomStatus.DRAWING) return;
+
+        const map: Partial<Record<Cheating, string>> = {
+          INITIAL: '초성',
+          FULL_ANSWER: '단어',
+          LENGTH: '단어 길이',
+        };
+
+        const cheatType = map[result] ?? '알 수 없는';
+
+        toastActions.addToast({
+          title: `${cheatType} 부정행위!`,
+          description: '누군가 그림 대신 글씨를 썼네요! 그림을 그려야죠 😊 글씨는 지워 주세요~',
+          variant: 'warning',
+        });
       },
     };
 
