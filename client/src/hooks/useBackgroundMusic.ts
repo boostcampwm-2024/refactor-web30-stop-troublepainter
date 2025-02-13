@@ -41,7 +41,7 @@ import { CDN } from '@/constants/cdn';
 export const useBackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [volume, setVolume] = useState(0); // 초기 볼륨 0으로 시작
-  const previousVolume = useRef(0.5); // 이전 볼륨값 저장용 (기본값 0.5)
+  const previousVolume = useRef(0.1); // 이전 볼륨값 저장용, 기본값 0.1 (기존 0.5에서 변경)
 
   useEffect(() => {
     audioRef.current = new Audio(CDN.BACKGROUND_MUSIC);
@@ -54,8 +54,8 @@ export const useBackgroundMusic = () => {
       try {
         // 자동 재생 시도
         await audioRef.current.play();
-        // 자동 재생 성공하면 기본 볼륨(0.5)으로 설정
-        setVolume(0.5);
+        // 자동 재생 성공하면 기본 볼륨(0.1)으로 설정
+        setVolume(0.1);
       } catch (err) {
         // 자동 재생이 차단된 경우
         console.error('Auto-play prevented:', err);

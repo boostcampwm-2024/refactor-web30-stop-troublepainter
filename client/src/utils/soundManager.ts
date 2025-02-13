@@ -49,14 +49,14 @@ export class SoundManager {
    * 미리 로드된 사운드를 재생합니다.
    *
    * @param id - 재생할 사운드의 식별자
-   * @param volume - 볼륨 레벨 (0.0에서 1.0), 기본값은 1입니다.
+   * @param volume - 볼륨 레벨 (0.0에서 1.0), 기본값은 0.5입니다.
    * @returns 사운드가 재생되기 시작할 때까지 해결되는 Promise
    *
    * @remarks
    * - 재생이 끝나면 오디오를 처음으로 되감습니다.
    * - 자동 재생 제한을 처리하고 적절한 메시지를 로그로 남깁니다.
    */
-  async playSound(id: string, volume = 1): Promise<void> {
+  async playSound(id: string, volume = 0.5): Promise<void> {
     const audio = this.audioMap.get(id);
     if (!audio) return;
 
