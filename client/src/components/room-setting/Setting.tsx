@@ -1,6 +1,6 @@
 import { HTMLAttributes, memo, useCallback, useEffect, useState } from 'react';
 import { RoomSettings } from '@troublepainter/core';
-import { SettingContent } from '@/components/setting/SettingContent';
+import { SettingContent } from '@/components/room-setting/SettingContent';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
