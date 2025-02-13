@@ -1,7 +1,7 @@
 import { HTMLAttributes, memo, useCallback, useEffect, useState } from 'react';
 import { RoomSettings } from '@troublepainter/core';
-import { CategoryModalContentContent } from '@/components/room-setting/CategoryModalContent';
 import { SettingContent } from '@/components/room-setting/SettingContent';
+import { WordsThemeModalContentContent } from '@/components/room-setting/WordsThemeModalContent';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
@@ -62,8 +62,8 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
     [selectedValues, actions],
   );
 
-  // 카테고리
-  const headerText = roomSettings?.category ? roomSettings.category : 'Setting';
+  // 제시어 테마
+  const headerText = roomSettings?.wordsTheme ? roomSettings.wordsTheme : 'Setting';
 
   return (
     <section
@@ -80,20 +80,20 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
             onClick={openModal}
             className="h-10 w-24 text-lg lg:h-10 lg:w-28 lg:text-xl"
           >
-            카테고리
+            제시어 테마
           </Button>
         )}
       </div>
 
       {/* Setting content */}
       <Modal
-        title="카테고리 설정"
+        title="제시어 테마 설정"
         isModalOpened={isModalOpened}
         closeModal={closeModal}
         handleKeyDown={handleKeyDown} // handleKeyDown 추가
         className="min-w-72 max-w-sm"
       >
-        <CategoryModalContentContent isModalOpened={isModalOpened} closeModal={closeModal} />
+        <WordsThemeModalContentContent isModalOpened={isModalOpened} closeModal={closeModal} />
       </Modal>
       <SettingContent
         settings={ROOM_SETTINGS}

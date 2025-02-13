@@ -288,16 +288,16 @@ export class GameService {
     }
 
     const roomSettings = await this.gameRepository.getRoomSettings(roomId);
-    const words = await this.fetchWords(roomSettings.totalRounds, roomSettings.category);
+    const words = await this.fetchWords(roomSettings.totalRounds, roomSettings.wordsTheme);
 
     await this.gameRepository.updateRoom(roomId, { words });
   }
 
-  private async fetchWords(totalRounds: number, category?: string): Promise<string[]> {
+  private async fetchWords(totalRounds: number, wordsTheme?: string): Promise<string[]> {
     let attempts = 0;
     while (attempts++ < 5) {
-      const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, category);
-      console.log(category, words);
+      const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, wordsTheme);
+      console.log(wordsTheme, words);
 
       if (words.length === totalRounds) return words;
       if (words[0] === '부적절') return GameService.DEFAULT_WORDS.slice(0, totalRounds);

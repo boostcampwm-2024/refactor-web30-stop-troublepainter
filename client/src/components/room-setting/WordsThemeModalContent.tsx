@@ -4,39 +4,39 @@ import { Input } from '@/components/ui/Input';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 
-interface CategoryModalContentContentProps {
+interface WordsThemeModalContentContentProps {
   isModalOpened: boolean;
   closeModal: () => void;
 }
 
-const CategoryModalContentContent = ({ isModalOpened, closeModal }: CategoryModalContentContentProps) => {
+const WordsThemeModalContentContent = ({ isModalOpened, closeModal }: WordsThemeModalContentContentProps) => {
   const roomSettings = useGameSocketStore((state) => state.roomSettings);
   const actions = useGameSocketStore((state) => state.actions);
-  const [category, setCategory] = useState(roomSettings?.category || '');
+  const [wordsTheme, setWordsTheme] = useState(roomSettings?.wordsTheme || '');
 
   useEffect(() => {
-    // 모달이 열릴 때마다 현재 카테고리로 초기화
+    // 모달이 열릴 때마다 현재 제시어 테마로 초기화
     if (isModalOpened) {
-      setCategory(roomSettings?.category || '');
+      setWordsTheme(roomSettings?.wordsTheme || '');
     }
-  }, [isModalOpened, roomSettings?.category]);
+  }, [isModalOpened, roomSettings?.wordsTheme]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!category.trim()) return;
+    if (!wordsTheme.trim()) return;
 
-    const trimmedCategory = category.trim();
+    const trimmedWordsTheme = wordsTheme.trim();
 
     // 서버에 업데이트 요청
     await gameSocketHandlers.updateSettings({
-      settings: { category: trimmedCategory },
+      settings: { wordsTheme: trimmedWordsTheme },
     });
 
     // 로컬 상태 업데이트
     if (roomSettings) {
       actions.updateRoomSettings({
         ...roomSettings,
-        category: trimmedCategory,
+        wordsTheme: trimmedWordsTheme,
       });
     }
 
@@ -45,12 +45,16 @@ const CategoryModalContentContent = ({ isModalOpened, closeModal }: CategoryModa
 
   return (
     <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => void handleSubmit(e)} className="flex flex-col gap-4">
-      <Input placeholder="카테고리를 입력하세요" value={category} onChange={(e) => setCategory(e.target.value)} />
+      <Input
+        placeholder="제시어 테마를 입력하세요"
+        value={wordsTheme}
+        onChange={(e) => setWordsTheme(e.target.value)}
+      />
       <div className="flex gap-2">
         <Button type="button" onClick={closeModal} variant="secondary" className="flex-1">
           취소
         </Button>
-        <Button type="submit" disabled={!category.trim()} className="flex-1">
+        <Button type="submit" disabled={!wordsTheme.trim()} className="flex-1">
           확인
         </Button>
       </div>
@@ -58,4 +62,4 @@ const CategoryModalContentContent = ({ isModalOpened, closeModal }: CategoryModa
   );
 };
 
-export { CategoryModalContentContent };
+export { WordsThemeModalContentContent };
