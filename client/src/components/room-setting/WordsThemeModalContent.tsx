@@ -44,12 +44,22 @@ const WordsThemeModalContentContent = ({ isModalOpened, closeModal }: WordsTheme
   };
 
   return (
-    <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => void handleSubmit(e)} className="flex flex-col gap-4">
+    <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => void handleSubmit(e)} className="flex flex-col gap-3">
+      <span className="text-center text-lg text-eastbay-800">
+        게임에서 사용될 제시어의 테마를 설정해보세요!
+        <br />
+        <span className="text-base text-eastbay-600">예시) 동물, 음식, 직업, 캐릭터, 스포츠 등 1가지 테마 입력</span>
+      </span>
+
       <Input
-        placeholder="제시어 테마를 입력하세요"
+        placeholder="동물, 음식, 직업, 캐릭터, 스포츠 등"
         value={wordsTheme}
         onChange={(e) => setWordsTheme(e.target.value)}
       />
+
+      {/* 입력 가이드 메시지 추가 */}
+      <span className="text-center text-base text-eastbay-500">입력한 테마를 바탕으로 AI가 제시어를 생성합니다.</span>
+
       <div className="flex gap-2">
         <Button type="button" onClick={closeModal} variant="secondary" className="flex-1">
           취소

@@ -71,14 +71,14 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
       {...props}
     >
       {/* Setting title */}
-      <div className="flex h-14 w-full items-center justify-between border-0 border-violet-950 bg-violet-500 px-4 sm:h-16 sm:rounded-t-xl sm:border-b-2">
+      <div className="flex h-14 w-full items-center justify-between border-0 border-violet-950 bg-violet-500 px-4 sm:h-16 sm:rounded-t-[0.625rem] sm:border-b-2">
         <h2 className="text-2xl text-white text-stroke-md sm:translate-y-1 lg:text-3xl">{headerText}</h2>
         {isHost && (
           <Button
             variant="secondary"
             size={'text'}
             onClick={openModal}
-            className="h-10 w-24 text-lg lg:h-10 lg:w-28 lg:text-xl"
+            className="h-10 w-28 text-lg lg:w-32 lg:text-xl"
           >
             제시어 테마
           </Button>
@@ -91,7 +91,7 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
         isModalOpened={isModalOpened}
         closeModal={closeModal}
         handleKeyDown={handleKeyDown} // handleKeyDown 추가
-        className="min-w-72 max-w-sm"
+        className="min-w-72 max-w-lg"
       >
         <WordsThemeModalContentContent isModalOpened={isModalOpened} closeModal={closeModal} />
       </Modal>

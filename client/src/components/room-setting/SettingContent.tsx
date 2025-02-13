@@ -11,7 +11,7 @@ interface SettingContentProps {
 }
 
 export const SettingContent = memo(({ settings, values, isHost, onSettingChange }: SettingContentProps) => (
-  <div className="flex min-h-[16.125rem] items-center justify-center bg-violet-200 sm:min-h-[18.56rem] sm:rounded-b-xl sm:px-6">
+  <div className="flex min-h-[16.125rem] items-center justify-center bg-violet-200 sm:min-h-[18.56rem] sm:rounded-b-[0.625rem] sm:px-6">
     <div className="flex min-h-[13.8rem] w-full flex-col items-center justify-center gap-4 border-0 border-violet-950 bg-violet-50 p-4 text-xl sm:h-auto sm:rounded-[0.625rem] sm:border-2 lg:gap-6 lg:text-2xl">
       {settings.map(({ label, key, options, shortcutKey }) => (
         <SettingItem
