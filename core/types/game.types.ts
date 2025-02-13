@@ -19,6 +19,7 @@ export interface RoomSettings {
   maxPlayers: number; // 최대 플레이어 수
   drawTime: number; // 그리기 제한시간
   totalRounds: number; // 총 라운드 수
+  category?: string; // 카테고리 입력
 }
 
 export enum PlayerStatus {
