@@ -9,7 +9,7 @@ import { useDrawing } from '@/hooks/canvas/useDrawing';
 import { useDrawingSocket } from '@/hooks/socket/useDrawingSocket';
 import { useCoordinateScale } from '@/hooks/useCoordinateScale';
 import { CanvasEventHandlers } from '@/types/canvas.types';
-import { base64ToArrayBuffer } from '@/utils/base64ToArrayBuffer';
+import { base64ToUnit8Array } from '@/utils/base64ToUnit8Array';
 import { getCanvasContext } from '@/utils/getCanvasContext';
 import { getCanvasImage } from '@/utils/getCanvasImage';
 import { getDrawPoint } from '@/utils/getDrawPoint';
@@ -91,9 +91,8 @@ const GameCanvas = ({
 
     const sendCanvasImage = () => {
       const image = getCanvasImage(canvasRef, 'png');
-      const buffer = base64ToArrayBuffer(image);
-      const uint8Array = new Uint8Array(buffer);
-      void gameSocketHandlers.checkDrawing({ image: uint8Array });
+      const unit8Array = base64ToUnit8Array(image);
+      void gameSocketHandlers.checkDrawing({ image: unit8Array });
     };
 
     const canvasCaptureInterval = setInterval(() => {
