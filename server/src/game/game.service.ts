@@ -99,7 +99,6 @@ export class GameService {
 
   private generateNickname() {
     const adjectives = [
-      '홀리몰리한',
       '감동실화',
       '극대노한',
       '야근한',
@@ -112,12 +111,11 @@ export class GameService {
       '완벽한',
       '우주최강',
       '허세쩌는',
-      '멘탈붕괴된',
+      '멘붕한',
       '꿀잼인',
       '억까당한',
       '오점없는',
       '현직백수',
-      '피지컬쩌는',
       '갓벽한',
       '존맛탱인',
       '렉걸린',
@@ -137,7 +135,7 @@ export class GameService {
       '냥이',
       '뉴비',
       '그림봇',
-      '패배장인',
+      '패배자',
       '고인물',
       '칠가이',
       '현자',
@@ -148,7 +146,6 @@ export class GameService {
       '츄르도둑',
       '케첩도둑',
       '밥도둑',
-      '쿠쿠다스',
     ];
 
     const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
@@ -300,6 +297,8 @@ export class GameService {
     let attempts = 0;
     while (attempts++ < 5) {
       const words = await this.openaiService.getDrawingWords(Difficulty.NORMAL, totalRounds, category);
+      console.log(category, words);
+
       if (words.length === totalRounds) return words;
       if (words[0] === '부적절') return GameService.DEFAULT_WORDS.slice(0, totalRounds);
     }
