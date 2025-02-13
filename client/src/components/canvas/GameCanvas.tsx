@@ -9,9 +9,8 @@ import { useDrawing } from '@/hooks/canvas/useDrawing';
 import { useDrawingSocket } from '@/hooks/socket/useDrawingSocket';
 import { useCoordinateScale } from '@/hooks/useCoordinateScale';
 import { CanvasEventHandlers } from '@/types/canvas.types';
-import { base64ToUnit8Array } from '@/utils/base64ToUnit8Array';
 import { getCanvasContext } from '@/utils/getCanvasContext';
-import { getCanvasImage } from '@/utils/getCanvasImage';
+import { getCanvasUint8Array } from '@/utils/getCanvasUint8Array';
 import { getDrawPoint } from '@/utils/getDrawPoint';
 
 interface GameCanvasProps {
@@ -89,15 +88,15 @@ const GameCanvas = ({
   useEffect(() => {
     if (roomStatus !== RoomStatus.DRAWING || !isHost) return;
 
-    const sendCanvasImage = () => {
-      const image = getCanvasImage(canvasRef, 'png');
-      const unit8Array = base64ToUnit8Array(image);
-      void gameSocketHandlers.checkDrawing({ image: unit8Array });
+    const sendCanvasImage = async () => {
+      const uint8Array = await getCanvasUint8Array(canvasRef);
+      if (!uint8Array) return;
+      void gameSocketHandlers.checkDrawing({ image: uint8Array });
     };
 
     const canvasCaptureInterval = setInterval(() => {
-      sendCanvasImage();
-    }, 5000);
+      void sendCanvasImage();
+    }, 15000);
 
     return () => clearInterval(canvasCaptureInterval);
   }, [roomStatus, isHost]);
