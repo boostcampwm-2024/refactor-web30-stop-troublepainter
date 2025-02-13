@@ -1,6 +1,6 @@
 import { InviteButton } from '@/components/lobby/InviteButton';
 import { StartButton } from '@/components/lobby/StartButton';
-import { Setting } from '@/components/setting/Setting';
+import { Setting } from '@/components/room-setting/Setting';
 
 const LobbyPage = () => {
   return (

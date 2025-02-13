@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { RoomSettings } from '@troublepainter/core';
-import { RoomSettingItem } from '@/components/setting/Setting';
-import { SettingItem } from '@/components/setting/SettingItem';
+import { RoomSettingItem } from '@/components/room-setting/Setting';
+import { SettingItem } from '@/components/room-setting/SettingItem';
 
 interface SettingContentProps {
   settings: RoomSettingItem[];
