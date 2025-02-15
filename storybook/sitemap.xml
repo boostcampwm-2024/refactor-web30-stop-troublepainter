@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 메인 페이지 -->
+  <url>
+    <loc>https://troublepainter.site/</loc>
+    <lastmod>2024-02-15</lastmod>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- 게임방 진입 페이지 -->
+  <url>
+    <loc>https://troublepainter.site/lobby</loc>
+    <lastmod>2024-02-15</lastmod>
+    <priority>0.8</priority>
+  </url>
+</urlset>
