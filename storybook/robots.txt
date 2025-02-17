@@ -6,9 +6,14 @@ User-agent: *
 # 모든 경로 허용
 Allow: /
 
-# 중요 API 경로 제외
+# 중요 시스템 경로 제외
 Disallow: /api/
 Disallow: /socket.io/
+Disallow: /etc/
+Disallow: /*.pem$
+Disallow: /*.key$
+Disallow: /*.conf$
+Disallow: /letsencrypt/
 
 # 사이트맵 위치
 Sitemap: https://troublepainter.site/sitemap.xml
