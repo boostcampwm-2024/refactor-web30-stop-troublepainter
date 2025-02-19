@@ -372,9 +372,9 @@ export class GameService {
     const room = await this.gameRepository.getRoom(roomId);
     if (!room) throw new RoomNotFoundException('Room not found');
 
-    const answer = room.words[room.currentRound - 1].trim();
+    const { result } = await this.openaiService.checkDrawing(image);
 
-    return await this.openaiService.checkDrawing(image, answer);
+    return result;
   }
 
   async checkAnswer(roomId: string, playerId: string, answer: string) {
