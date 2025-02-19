@@ -89,14 +89,14 @@ const GameCanvas = ({
     if (roomStatus !== RoomStatus.DRAWING || !isHost) return;
 
     const sendCanvasImage = async () => {
-      const uint8Array = await getCanvasUint8Array(canvasRef);
+      const uint8Array = await getCanvasUint8Array(canvasRef, 'image/webp', 0.8);
       if (!uint8Array) return;
       void gameSocketHandlers.checkDrawing({ image: uint8Array });
     };
 
     const canvasCaptureInterval = setInterval(() => {
       void sendCanvasImage();
-    }, 10000);
+    }, 15000);
 
     return () => clearInterval(canvasCaptureInterval);
   }, [roomStatus, isHost]);
