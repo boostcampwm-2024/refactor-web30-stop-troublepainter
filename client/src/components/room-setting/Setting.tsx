@@ -1,7 +1,7 @@
 import { HTMLAttributes, memo, useCallback, useEffect, useState } from 'react';
 import { RoomSettings } from '@troublepainter/core';
 import { SettingContent } from '@/components/room-setting/SettingContent';
-import { WordsThemeModalContentContent } from '@/components/room-setting/WordsThemeModalContent';
+import { WordsThemeModalContent } from '@/components/room-setting/WordsThemeModalContent';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
@@ -93,7 +93,7 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
         handleKeyDown={handleKeyDown} // handleKeyDown 추가
         className="min-w-72 max-w-lg"
       >
-        <WordsThemeModalContentContent isModalOpened={isModalOpened} closeModal={closeModal} />
+        <WordsThemeModalContent isModalOpened={isModalOpened} closeModal={closeModal} />
       </Modal>
       <SettingContent
         settings={ROOM_SETTINGS}
