@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 import { ConfigService } from '@nestjs/config';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+// TODO: 이미지 토큰 계산이 필요할 경우 활성화
+// import * as sharp from 'sharp';
+
 @Injectable()
 export class OpenAIService {
   private readonly openai: OpenAI;
   private readonly objectStorage: S3Client;
+  private readonly LOW_DETAIL_IMAGE_TOKENS = 85;
 
   constructor(private readonly configService: ConfigService) {
     this.openai = new OpenAI({
@@ -49,10 +53,28 @@ export class OpenAIService {
     );
   }
 
-  async checkDrawing(image: Buffer, answer: string) {
+  // TODO: 이미지 토큰 계산이 필요할 경우 활성화
+  private async calculateImageTokens(width: number, height: number): Promise<number> {
+    const tilesX = Math.ceil(width / 512);
+    const tilesY = Math.ceil(height / 512);
+    const totalTiles = tilesX * tilesY;
+
+    const baseTokens = 85;
+    const tokenPerTile = 170;
+
+    return baseTokens + tokenPerTile * totalTiles;
+  }
+
+  async checkDrawing(image: Buffer) {
     let imageKey: string | null = null;
 
     try {
+      // TODO: 이미지 토큰 계산이 필요할 경우 활성화
+      // const metadata = await sharp(image).metadata();
+      // const imageTokens = await this.calculateImageTokens(metadata.width || 0, metadata.height || 0);
+
+      const startTime = performance.now();
+
       const { url, key } = await this.uploadImageToStorage(image);
       imageKey = key;
 
@@ -64,7 +86,21 @@ export class OpenAIService {
             content: [
               {
                 type: 'text',
-                text: '너는 게임 <방해꾼은 못말려>의 정답 노출 방지 챗봇이야.\n\n방해꾼은 못말려는 실시간 드로잉 퀴즈 게임이야. 한 사람이 특정 제시어에 맞춰서 그림을 그리고, 나머지 참여자들이 그림을 보고 제시어를 맞추려고 시도하는 형식의 게임이야.\n\n게임 특성 상, 그림을 그리는 사람이 캔버스에 제시어를 직접 적어버리거나, 제시어의 초성을 적거나, 글자 수 힌트를 적으면 게임이 쉬워져. 그래서 너는 이 세 가지 경우를 잡아서 알려주면 돼.\n\nInput과 Output은 다음과 같아.\n\n<Input>\n\n- JSON으로 제시어가 들어올거야. 예를 들어, `{"subject": "코끼리"}` 형태야. `"subject"` 키 안에 내용이 들어가.\n- 동시에, 이미지가 제공될거야. 이미지는 특정 시점에 그림 그리는 사람의 화면을 캡쳐한 거야.\n\n<Output>\n\n다음 `Enum` 값 중 하나의 값을 선택해서 JSON Key `"result"`로 보내줘.\n\n1. `"OK"` : 힌트를 주려는 시도가 없는 상태일 경우에 보내야 하는 메시지야.\n2. `"LENGTH"` : 글자 수를 알려주려는 시도가 있을 때 보내야 하는 메시지야.\n3. `"INITIAL"` : 초성을 알려주려고 시도했을 때 보내야 하는 메시지야.\n4. `"FULL_ANSWER"` : 정답을 그대로 알려주려고 시도했을 때 보내야 하는 메시지야.\n\n주의 사항은 다음과 같아.\n\n- 유저는 초성을 화면 구석 쪽에 작은 글씨로 적어둘 가능성이 높아. 그 부분을 주의깊게 봐야 해.\n- 유저가 글자 수 힌트를 줄 때 그냥 숫자로 적는 경우도 있지만, 작은 원을 여러 개 그려서 그 개수로 힌트를 주는 경우가 있어. 아마 화면 구석에 적을 것이기 때문에 주의 깊게 살펴봐야 해.',
+                text: `
+                너는 그림 주제 맞히기 게임의 부정행위 방지 챗봇이야.
+
+                <Input>
+                - 이미지
+
+                <Output>
+                - "OK": 한글, 영어, 초성, 문자가 없음.
+                - "WARN": 한글, 영어, 초성, 문자가 있음.
+
+                주의사항
+                - 글자인지 기하학적인 도형인지 구분되지 않는다면 "OK". 그러나 단어의 초성을 나타내는 것 같다면 "WARN"
+                - 이모티콘/숫자/특수문자는 "OK".
+                - 아무것도 그려지지 않았거나 애매한 경우 "OK"
+                `,
               },
             ],
           },
@@ -75,11 +111,8 @@ export class OpenAIService {
                 type: 'image_url',
                 image_url: {
                   url: url,
+                  detail: 'low',
                 },
-              },
-              {
-                type: 'text',
-                text: `{ "subject" : "${answer}" }`,
               },
             ],
           },
@@ -94,7 +127,7 @@ export class OpenAIService {
               properties: {
                 result: {
                   type: 'string',
-                  enum: ['OK', 'LENGTH', 'INITIAL', 'FULL_ANSWER'],
+                  enum: ['OK', 'WARN'],
                   description: 'The value must be one of the specified statuses.',
                 },
               },
@@ -109,11 +142,20 @@ export class OpenAIService {
         frequency_penalty: 0,
         presence_penalty: 0,
       });
+      const endTime = performance.now();
       const result = JSON.parse(response.choices[0].message.content);
+
+      const metrics = {
+        duration: endTime - startTime,
+        promptTokens: response.usage?.prompt_tokens || 0,
+        completionTokens: response.usage?.completion_tokens || 0,
+        totalTokens: response.usage?.total_tokens || 0,
+        imageTokens: this.LOW_DETAIL_IMAGE_TOKENS,
+      };
 
       await this.deleteImageFromStorage(key);
 
-      return result;
+      return { result, metrics };
     } catch (error) {
       if (imageKey) {
         await this.deleteImageFromStorage(imageKey).catch((error) => console.error('Failed to delete image: ', error));
