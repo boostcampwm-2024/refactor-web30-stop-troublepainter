@@ -135,7 +135,8 @@ export const useDrawingOperation = (
     if (!state.crdtRef.current) return;
 
     const { canvas, ctx } = getCanvasContext(canvasRef);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const activeStrokes = state.crdtRef.current.getActiveStrokes();
     for (const { stroke } of activeStrokes) {
@@ -229,7 +230,8 @@ export const useDrawingOperation = (
 
   const clearCanvas = useCallback(() => {
     const { canvas, ctx } = getCanvasContext(canvasRef);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
 
   return {
