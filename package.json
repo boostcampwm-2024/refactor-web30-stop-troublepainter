@@ -21,6 +21,7 @@
     "typedoc-plugin-extras": "^3.1.0"
   },
   "dependencies": {
-    "@troublepainter/core": "workspace:*"
+    "@troublepainter/core": "workspace:*",
+    "korcen": "^0.2.4"
   }
 }
