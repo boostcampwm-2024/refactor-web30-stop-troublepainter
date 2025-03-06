@@ -20,3 +20,9 @@ export interface HelpPageProps {
   pagenation: boolean[];
   setPageIndex: (index: number) => void;
 }
+
+export interface IndicatorProps {
+  pageData: PageData;
+  pagenation: boolean[];
+  setPageIndex: (index: number) => void;
+}

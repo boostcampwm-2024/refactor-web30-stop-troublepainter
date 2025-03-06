@@ -1,10 +1,6 @@
 import { useEffect, useState, TouchEvent, useRef } from 'react';
 import { DotLottie } from '@lottiefiles/dotlottie-react';
-import HelpPage from './HelpPage';
-import left from '@/assets/left.svg';
-import right from '@/assets/right.svg';
-import { Modal } from '@/components/ui/Modal';
-import { HelpRollingModalProps, PageData } from '@/types/help.types';
+import { PageData } from '@/types/help.types';
 
 const pageData: PageData[] = [
   {
@@ -38,7 +34,7 @@ const pageData: PageData[] = [
   },
 ];
 
-const HelpRollingModal = ({ isModalOpened, handleCloseModal, handleKeyDown }: HelpRollingModalProps) => {
+const useHelpModal = (isModalOpened: boolean) => {
   const [pageIndex, setPageIndex] = useState<number>(0);
   const [pagenation, setPagenation] = useState(new Array(pageData.length).fill(false));
   const [dotLottie, setDotLottie] = useState<DotLottie | null>(null);
@@ -100,35 +96,17 @@ const HelpRollingModal = ({ isModalOpened, handleCloseModal, handleKeyDown }: He
     canDrag.current = true;
   };
 
-  return (
-    <Modal
-      isModalOpened={isModalOpened}
-      closeModal={handleCloseModal}
-      handleKeyDown={handleKeyDown}
-      className="w-full max-w-screen-md"
-    >
-      <section
-        className="flex md:p-7"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-      >
-        <button className="relative -left-6 hidden md:block" onClick={() => changePageIndex(true)}>
-          <img src={left} width={30} alt="이전 페이지 버튼" className="transition hover:brightness-75" />
-        </button>
-        <HelpPage
-          pageData={pageData[pageIndex]}
-          isModalOpened
-          dotLottieRefCallback={dotLottieRefCallback}
-          pagenation={pagenation}
-          setPageIndex={setPageIndex}
-        />
-        <button className="relative -right-6 hidden md:block" onClick={() => changePageIndex(false)}>
-          <img src={right} width={30} alt="다음 페이지 버튼" className="transition hover:brightness-75" />
-        </button>
-      </section>
-    </Modal>
-  );
+  return {
+    pageData,
+    pageIndex,
+    setPageIndex,
+    pagenation,
+    dotLottieRefCallback,
+    handleTouchStart,
+    handleTouchEnd,
+    handleTouchMove,
+    changePageIndex,
+  };
 };
 
-export default HelpRollingModal;
+export default useHelpModal;
