@@ -4,7 +4,7 @@ import { CURSOR_LENGTH, CURSOR_WIDTH, DELETE_INTERVAL } from '@/constants/backgr
 import { getCanvasContext } from '@/utils/getCanvasContext';
 import { getDrawPoint } from '@/utils/getDrawPoint';
 
-const Background = ({ className }: { className: string }) => {
+const useBackgroundCanvas = () => {
   const cursorCanvasRef = useRef<HTMLCanvasElement>(null);
   const cursorAnimation = useRef<number>();
 
@@ -90,16 +90,11 @@ const Background = ({ className }: { className: string }) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
-  return (
-    <div className={className}>
-      <canvas
-        ref={cursorCanvasRef}
-        className="absolute h-full w-full cursor-none"
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-      />
-    </div>
-  );
+  return {
+    cursorCanvasRef,
+    handleMouseLeave,
+    handleMouseMove,
+  };
 };
 
-export default Background;
+export default useBackgroundCanvas;

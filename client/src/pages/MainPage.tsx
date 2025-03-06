@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import BackgroundCanvas from '@/components/main/BackgroundCanvas';
+import BackgroundCanvas from '@/components/main/BackgroundCanvasUI';
 import BackgroundImage from '@/components/main/BackgroundImage';
 import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
