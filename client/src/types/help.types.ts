@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent, RefObject, MouseEvent } from 'react';
 import { DotLottie } from '@lottiefiles/dotlottie-react';
 
 export interface PageData {
@@ -25,4 +25,11 @@ export interface IndicatorProps {
   pageData: PageData;
   pagenation: boolean[];
   setPageIndex: (index: number) => void;
+}
+
+export interface BackgroundCanvasUIProps {
+  className: string;
+  cursorCanvasRef: RefObject<HTMLCanvasElement>;
+  handleMouseLeave: () => void;
+  handleMouseMove: (e: MouseEvent<HTMLCanvasElement>) => void;
 }

@@ -3,11 +3,7 @@ import tiny from '@/assets/background-tiny.png';
 import { CDN } from '@/constants/cdn';
 import { cn } from '@/utils/cn';
 
-interface BackgroundImageProps {
-  className?: string;
-}
-
-const BackgroundImage = ({ className }: BackgroundImageProps) => {
+const BackgroundImage = ({ className }: { className: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
 

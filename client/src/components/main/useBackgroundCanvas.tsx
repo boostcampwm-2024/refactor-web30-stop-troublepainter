@@ -21,8 +21,8 @@ const useBackgroundCanvas = () => {
     const { canvas, ctx } = getCanvasContext(cursorCanvasRef);
 
     const handleResize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
     };
 
     handleResize();

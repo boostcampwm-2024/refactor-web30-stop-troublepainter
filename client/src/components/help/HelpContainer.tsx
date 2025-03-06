@@ -19,7 +19,7 @@ const HelpContainer = () => {
   };
 
   return (
-    <nav className="fixed right-4 top-4 z-30 xs:right-8 xs:top-8">
+    <section className="fixed right-4 top-4 z-30 xs:right-8 xs:top-8">
       <Button
         variant="transperent"
         size="icon"
@@ -36,7 +36,7 @@ const HelpContainer = () => {
           <HelpRollingModal isModalOpened={isModalOpened} handleCloseModal={closeModal} handleKeyDown={handleKeyDown} />
         </Suspense>
       )}
-    </nav>
+    </section>
   );
 };
 

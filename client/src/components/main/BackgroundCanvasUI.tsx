@@ -1,8 +1,11 @@
-import useBackgroundCanvas from './useBackgroundCanvas';
+import { BackgroundCanvasUIProps } from '@/types/help.types';
 
-const Background = ({ className }: { className: string }) => {
-  const { cursorCanvasRef, handleMouseLeave, handleMouseMove } = useBackgroundCanvas();
-
+const BackgroundCanvasUI = ({
+  className,
+  cursorCanvasRef,
+  handleMouseLeave,
+  handleMouseMove,
+}: BackgroundCanvasUIProps) => {
   return (
     <div className={className}>
       <canvas
@@ -15,4 +18,4 @@ const Background = ({ className }: { className: string }) => {
   );
 };
 
-export default Background;
+export default BackgroundCanvasUI;
