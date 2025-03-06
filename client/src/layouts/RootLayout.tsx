@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import BackgroundMusicButton from '@/components/bgm-button/BackgroundMusicButton';
-import HelpContainer from '@/components/help/HelpContainer';
+import HelpContainer from '@/components/help/HelpButton';
 import { playerIdStorageUtils } from '@/utils/playerIdStorage';
 
 const RootLayout = () => {

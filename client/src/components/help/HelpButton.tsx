@@ -3,7 +3,7 @@ import helpIcon from '@/assets/help-icon.svg';
 import { Button } from '@/components/ui/Button';
 import { useModal } from '@/hooks/useModal';
 
-const HelpRollingModal = lazy(() => import('@/components/help/HelpModalUI'));
+const HelpModalContainer = lazy(() => import('@/components/help/HelpModalContainer'));
 
 const HelpContainer = () => {
   const { isModalOpened, closeModal, openModal, handleKeyDown } = useModal();
@@ -33,7 +33,11 @@ const HelpContainer = () => {
 
       {shouldLoadModal && (
         <Suspense fallback={null}>
-          <HelpRollingModal isModalOpened={isModalOpened} handleCloseModal={closeModal} handleKeyDown={handleKeyDown} />
+          <HelpModalContainer
+            isModalOpened={isModalOpened}
+            handleCloseModal={closeModal}
+            handleKeyDown={handleKeyDown}
+          />
         </Suspense>
       )}
     </section>

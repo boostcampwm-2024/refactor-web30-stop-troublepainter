@@ -1,22 +1,23 @@
-import HelpPage from './HelpModalPageUI';
-import useHelpModal from './useHelpModal';
+import HelpPage from './HelpModalPage';
 import left from '@/assets/left.svg';
 import right from '@/assets/right.svg';
 import { Modal } from '@/components/ui/Modal';
-import { HelpRollingModalProps } from '@/types/help.types';
+import { HelpModalUIProps } from '@/types/help.types';
 
-const HelpRollingModal = ({ isModalOpened, handleCloseModal, handleKeyDown }: HelpRollingModalProps) => {
-  const {
-    pageData,
-    pageIndex,
-    setPageIndex,
-    pagenation,
-    dotLottieRefCallback,
-    handleTouchStart,
-    handleTouchEnd,
-    handleTouchMove,
-    changePageIndex,
-  } = useHelpModal(isModalOpened);
+const HelpModalUI = ({
+  isModalOpened,
+  handleCloseModal,
+  handleKeyDown,
+  pageData,
+  pageIndex,
+  setPageIndex,
+  pagenation,
+  dotLottieRefCallback,
+  handleTouchStart,
+  handleTouchEnd,
+  handleTouchMove,
+  changePageIndex,
+}: HelpModalUIProps) => {
   return (
     <Modal
       isModalOpened={isModalOpened}
@@ -48,4 +49,4 @@ const HelpRollingModal = ({ isModalOpened, handleCloseModal, handleKeyDown }: He
   );
 };
 
-export default HelpRollingModal;
+export default HelpModalUI;

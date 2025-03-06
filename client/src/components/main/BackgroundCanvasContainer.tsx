@@ -1,5 +1,5 @@
+import useBackgroundCanvas from '../../hooks/useBackgroundCanvas';
 import BackgroundCanvasUI from './BackgroundCanvasUI';
-import useBackgroundCanvas from './useBackgroundCanvas';
 import BackgroundImage from '@/components/main/BackgroundImage';
 
 const BackgroundContainer = ({ className }: { className: string }) => {
