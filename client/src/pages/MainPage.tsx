@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import BackgroundCanvas from '@/components/ui/BackgroundCanvas';
-import BackgroundImage from '@/components/ui/BackgroundImage';
+import BackgroundCanvas from '@/components/main/BackgroundCanvas';
+import BackgroundImage from '@/components/main/BackgroundImage';
 import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
 import { PixelTransitionContainer } from '@/components/ui/PixelTransitionContainer';

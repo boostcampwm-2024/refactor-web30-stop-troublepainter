@@ -1,6 +1,6 @@
 import { useEffect, useState, TouchEvent, useRef } from 'react';
 import { DotLottie } from '@lottiefiles/dotlottie-react';
-import HelpPage from '../ui/HelpPage';
+import HelpPage from './HelpPage';
 import left from '@/assets/left.svg';
 import right from '@/assets/right.svg';
 import { Modal } from '@/components/ui/Modal';

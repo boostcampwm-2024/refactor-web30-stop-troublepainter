@@ -4,7 +4,7 @@ import loading from '@/assets/lottie/loading.lottie';
 import { ChatContatiner } from '@/components/chat/ChatContatiner';
 import { NavigationModal } from '@/components/modal/NavigationModal';
 import { PlayerCardList } from '@/components/player/PlayerCardList';
-import BackgroundImage from '@/components/ui/BackgroundImage';
+import BackgroundImage from '@/components/main/BackgroundImage';
 import { useGameSocket } from '@/hooks/socket/useGameSocket';
 import BrowserNavigationGuard from '@/layouts/BrowserNavigationGuard';
 import GameHeader from '@/layouts/GameHeader';
