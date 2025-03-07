@@ -41,7 +41,7 @@ const MainPage = () => {
           isExiting ? 'bg-transparent' : 'bg-gradient-to-b from-violet-950 via-violet-800 to-fuchsia-700',
         )}
       >
-        <BackgroundContainer className="pointer-events-auto absolute inset-0 -z-20" />
+        <BackgroundContainer />
 
         <div className="-z-10 duration-1000 animate-in fade-in slide-in-from-top-8">
           <Logo variant="main" className="w-full transition duration-300 hover:scale-110 hover:brightness-[1.12]" />
