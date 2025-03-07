@@ -36,7 +36,7 @@ const pageData: PageData[] = [
 
 const useHelpModal = (isModalOpened: boolean) => {
   const [pageIndex, setPageIndex] = useState<number>(0);
-  const [pagenation, setPagenation] = useState(new Array(pageData.length).fill(false));
+  const [pageIndicator, setPageIndicator] = useState(new Array(pageData.length).fill(false));
   const [dotLottie, setDotLottie] = useState<DotLottie | null>(null);
 
   const startPos = useRef<number>(0);
@@ -45,7 +45,7 @@ const useHelpModal = (isModalOpened: boolean) => {
   useEffect(() => {
     const newPageState = new Array(pageData.length).fill(false);
     newPageState[pageIndex] = true;
-    setPagenation(newPageState);
+    setPageIndicator(newPageState);
   }, [pageIndex]);
 
   useEffect(() => {
@@ -100,7 +100,7 @@ const useHelpModal = (isModalOpened: boolean) => {
     pageData,
     pageIndex,
     setPageIndex,
-    pagenation,
+    pageIndicator,
     dotLottieRefCallback,
     handleTouchStart,
     handleTouchEnd,

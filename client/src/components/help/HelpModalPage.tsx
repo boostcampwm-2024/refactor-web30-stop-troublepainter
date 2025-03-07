@@ -4,7 +4,7 @@ import Indicator from './Indicator';
 import { HelpPageProps } from '@/types/help.types';
 import { cn } from '@/utils/cn';
 
-const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pagenation, setPageIndex }: HelpPageProps) => {
+const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pageIndicator, setPageIndex }: HelpPageProps) => {
   useEffect(() => {
     const loadAnimation = async () => {
       const response = await fetch(pageData.img);
@@ -38,7 +38,7 @@ const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pagenation, s
           </div>
         </article>
       </section>
-      <Indicator pageData={pageData} pagenation={pagenation} setPageIndex={setPageIndex} />
+      <Indicator pageData={pageData} pageIndicator={pageIndicator} setPageIndex={setPageIndex} />
     </div>
   );
 };

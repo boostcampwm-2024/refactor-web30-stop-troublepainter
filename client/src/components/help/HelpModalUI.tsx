@@ -11,7 +11,7 @@ const HelpModalUI = ({
   pageData,
   pageIndex,
   setPageIndex,
-  pagenation,
+  pageIndicator,
   dotLottieRefCallback,
   handleTouchStart,
   handleTouchEnd,
@@ -38,7 +38,7 @@ const HelpModalUI = ({
           pageData={pageData[pageIndex]}
           isModalOpened
           dotLottieRefCallback={dotLottieRefCallback}
-          pagenation={pagenation}
+          pageIndicator={pageIndicator}
           setPageIndex={setPageIndex}
         />
         <button className="relative -right-6 hidden md:block" onClick={() => changePageIndex(false)}>

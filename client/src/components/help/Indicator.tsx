@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { IndicatorProps } from '@/types/help.types';
 import { cn } from '@/utils/cn';
 
-const Indicator = ({ pageData, pagenation, setPageIndex }: IndicatorProps) => {
+const Indicator = ({ pageData, pageIndicator, setPageIndex }: IndicatorProps) => {
   useEffect(() => {
     const loadAnimation = async () => {
       const response = await fetch(pageData.img);
@@ -17,7 +17,7 @@ const Indicator = ({ pageData, pagenation, setPageIndex }: IndicatorProps) => {
 
   return (
     <div className="relative top-5 flex flex-row items-center justify-center p-5">
-      {pagenation.map((isSelect, i) => {
+      {pageIndicator.map((isSelect, i) => {
         return (
           <button
             key={i}

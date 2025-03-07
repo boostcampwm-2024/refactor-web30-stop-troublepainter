@@ -20,7 +20,7 @@ export interface HelpModalUIProps {
   pageData: PageData[];
   pageIndex: number;
   setPageIndex: (index: number) => void;
-  pagenation: boolean[];
+  pageIndicator: boolean[];
   dotLottieRefCallback: (dot: DotLottie) => void;
   handleTouchStart: (e: TouchEvent<HTMLDivElement>) => void;
   handleTouchEnd: () => void;
@@ -32,13 +32,13 @@ export interface HelpPageProps {
   pageData: PageData;
   isModalOpened: boolean;
   dotLottieRefCallback: (dot: DotLottie) => void;
-  pagenation: boolean[];
+  pageIndicator: boolean[];
   setPageIndex: (index: number) => void;
 }
 
 export interface IndicatorProps {
   pageData: PageData;
-  pagenation: boolean[];
+  pageIndicator: boolean[];
   setPageIndex: (index: number) => void;
 }
 
