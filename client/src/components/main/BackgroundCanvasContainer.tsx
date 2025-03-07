@@ -1,6 +1,6 @@
-import useBackgroundCanvas from '../../hooks/useBackgroundCanvas';
 import BackgroundCanvasUI from './BackgroundCanvasUI';
 import BackgroundImage from '@/components/main/BackgroundImage';
+import useBackgroundCanvas from '@/hooks/useBackgroundCanvas';
 
 const BackgroundContainer = ({ className }: { className: string }) => {
   const { cursorCanvasRef, handleMouseLeave, handleMouseMove } = useBackgroundCanvas();

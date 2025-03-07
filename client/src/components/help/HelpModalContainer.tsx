@@ -1,5 +1,5 @@
-import useHelpModal from '../../hooks/useHelpModal';
 import HelpModalUI from './HelpModalUI';
+import useHelpModal from '@/hooks/useHelpModal';
 import { HelpModalContainerProps } from '@/types/help.types';
 
 const HelpModalContainer = ({ isModalOpened, handleCloseModal, handleKeyDown }: HelpModalContainerProps) => {
