@@ -16,7 +16,7 @@
     "fix": "pnpm format && pnpm lint:fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "lighthouse": "playwright test --project=lighthouse"
+    "lighthouse": "pnpm build && playwright test --project=lighthouse"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.10.1",
