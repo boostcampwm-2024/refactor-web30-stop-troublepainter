@@ -52,3 +52,10 @@ export interface CanvasEventHandlers {
   onTouchEnd?: (e: TouchEvent<HTMLCanvasElement>) => void;
   onTouchCancel?: (e: TouchEvent<HTMLCanvasElement>) => void;
 }
+
+export type Color = '검정' | '분홍' | '하늘' | '노랑' | '회색';
+
+export type ColorInfo = {
+  color: Color;
+  backgroundColor: string;
+};

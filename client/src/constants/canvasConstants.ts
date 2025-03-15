@@ -1,3 +1,5 @@
+import { ColorInfo } from '@/types/canvas.types';
+
 export const DRAWING_MODE = {
   PEN: 0,
   FILL: 1,
@@ -13,7 +15,7 @@ export const MAINCANVAS_RESOLUTION_WIDTH = 1000;
 export const MAINCANVAS_RESOLUTION_HEIGHT = 625;
 //해상도 비율 변경 시 CanvasUI의 aspect-[16/10] 도 수정해야 정상적으로 렌더링됩니다.
 
-export const COLORS_INFO = [
+export const COLORS_INFO: ColorInfo[] = [
   { color: '검정', backgroundColor: '#000000' },
   { color: '분홍', backgroundColor: '#FF69B4' },
   { color: '노랑', backgroundColor: '#FFFF00' },
