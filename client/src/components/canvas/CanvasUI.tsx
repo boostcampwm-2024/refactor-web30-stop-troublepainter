@@ -1,4 +1,4 @@
-import { forwardRef, HTMLAttributes, RefObject, useEffect } from 'react';
+import { forwardRef, HTMLAttributes, RefObject } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import bucketIcon from '@/assets/bucket-icon.svg';
 import penIcon from '@/assets/pen-icon.svg';
@@ -12,10 +12,10 @@ import {
   MAINCANVAS_RESOLUTION_WIDTH,
 } from '@/constants/canvasConstants';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
+import { useShortcuts } from '@/hooks/useShortcuts';
 import { CanvasEventHandlers, Color, DrawingMode } from '@/types/canvas.types';
 import { ShortcutKey } from '@/types/shorcut.types';
 import { cn } from '@/utils/cn';
-import { shortcutManager } from '@/utils/shortcutManager';
 
 const toolbarVariants = cva('flex items-center justify-center gap-3 border-violet-950 bg-eastbay-400 p-2', {
   variants: {
@@ -126,8 +126,6 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     },
     ref,
   ) => {
-    const { registerShortcut, unregisterShortcut } = shortcutManager();
-
     const colorShortKeyMap: Record<Color, ShortcutKey> = {
       검정: SHORTCUT_KEYS.BLACK_COLOR.key,
       노랑: SHORTCUT_KEYS.YELLOW_COLOR.key,
@@ -136,21 +134,30 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       회색: SHORTCUT_KEYS.GRAY_COLOR.key,
     };
 
-    useEffect(() => {
-      registerShortcut(SHORTCUT_KEYS.PEN.key, () => onDrawingModeChange(DRAWING_MODE.PEN));
-      registerShortcut(SHORTCUT_KEYS.FILL.key, () => onDrawingModeChange(DRAWING_MODE.FILL));
-      registerShortcut(SHORTCUT_KEYS.UNDO.key, () => onUndo());
-      registerShortcut(SHORTCUT_KEYS.REDO.key, () => onRedo());
-      colors.forEach((color) => registerShortcut(colorShortKeyMap[color.color], () => color.onClick()));
-
-      return () => {
-        unregisterShortcut(SHORTCUT_KEYS.PEN.key);
-        unregisterShortcut(SHORTCUT_KEYS.FILL.key);
-        unregisterShortcut(SHORTCUT_KEYS.UNDO.key);
-        unregisterShortcut(SHORTCUT_KEYS.REDO.key);
-        colors.forEach((color) => unregisterShortcut(colorShortKeyMap[color.color]));
-      };
-    }, [onUndo, onRedo]);
+    useShortcuts(
+      [
+        {
+          key: SHORTCUT_KEYS.PEN.key,
+          action: () => onDrawingModeChange(DRAWING_MODE.PEN),
+        },
+        {
+          key: SHORTCUT_KEYS.FILL.key,
+          action: () => onDrawingModeChange(DRAWING_MODE.FILL),
+        },
+        {
+          key: SHORTCUT_KEYS.UNDO.key,
+          action: onUndo,
+        },
+        {
+          key: SHORTCUT_KEYS.REDO.key,
+          action: onRedo,
+        },
+        ...colors.map((color) => {
+          return { key: colorShortKeyMap[color.color], action: () => color.onClick() };
+        }),
+      ],
+      [onUndo, onRedo],
+    );
 
     return (
       <div

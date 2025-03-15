@@ -1,13 +1,13 @@
-import { FormEvent, memo, useEffect, useMemo, useRef, useState } from 'react';
+import { FormEvent, memo, useMemo, useRef, useState } from 'react';
 import { PlayerRole, RoomStatus, type ChatResponse } from '@troublepainter/core';
 import { Input } from '@/components/ui/Input';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { chatSocketHandlers } from '@/handlers/socket/chatSocket.handler';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
+import { useShortcuts } from '@/hooks/useShortcuts';
 import { useChatSocketStore } from '@/stores/socket/chatSocket.store';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 import { useSocketStore } from '@/stores/socket/socket.store';
-import { shortcutManager } from '@/utils/shortcutManager';
 
 export const ChatInput = memo(() => {
   const [inputMessage, setInputMessage] = useState('');
@@ -21,8 +21,6 @@ export const ChatInput = memo(() => {
   const roundAssignedRole = useGameSocketStore((state) => state.roundAssignedRole);
   // 챗 액션
   const chatActions = useChatSocketStore((state) => state.actions);
-
-  const { registerShortcut, unregisterShortcut } = shortcutManager();
 
   const shouldDisableInput = useMemo(() => {
     const ispainters = roundAssignedRole !== PlayerRole.GUESSER;
@@ -53,19 +51,23 @@ export const ChatInput = memo(() => {
     setInputMessage('');
   };
 
-  useEffect(() => {
-    registerShortcut(SHORTCUT_KEYS.CHAT.key, () => {
-      const isNoFocusedElement = !document.activeElement || document.activeElement === document.body;
+  useShortcuts(
+    [
+      {
+        key: SHORTCUT_KEYS.CHAT.key,
+        action: () => {
+          const isNoFocusedElement = !document.activeElement || document.activeElement === document.body;
 
-      if (isNoFocusedElement) {
-        inputRef.current?.focus();
-      } else if (inputMessage.trim() === '') {
-        inputRef.current?.blur();
-      }
-    });
-
-    return () => unregisterShortcut(SHORTCUT_KEYS.CHAT.key);
-  }, [inputMessage]);
+          if (isNoFocusedElement) {
+            inputRef.current?.focus();
+          } else if (inputMessage.trim() === '') {
+            inputRef.current?.blur();
+          }
+        },
+      },
+    ],
+    [inputMessage],
+  );
 
   return (
     <form onSubmit={handleSubmit} className="mt-1 w-full">

@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
+import { useShortcuts } from '@/hooks/useShortcuts';
 import { useToastStore } from '@/stores/toast.store';
 import { cn } from '@/utils/cn';
-import { shortcutManager } from '@/utils/shortcutManager';
 
 export const InviteButton = () => {
   const [copied, setCopied] = useState(false);
   const actions = useToastStore((state) => state.actions);
-  const { registerShortcut, unregisterShortcut } = shortcutManager();
 
   const handleCopyInvite = async () => {
     if (copied) return;
@@ -34,10 +33,12 @@ export const InviteButton = () => {
   };
 
   // 게임 초대 단축키 적용
-  useEffect(() => {
-    registerShortcut(SHORTCUT_KEYS.GAME_INVITE.key, () => void handleCopyInvite());
-    return () => unregisterShortcut(SHORTCUT_KEYS.GAME_INVITE.key);
-  }, []);
+  useShortcuts([
+    {
+      key: SHORTCUT_KEYS.GAME_INVITE.key,
+      action: () => void handleCopyInvite(),
+    },
+  ]);
 
   return (
     <Button
