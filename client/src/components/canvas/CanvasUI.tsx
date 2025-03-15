@@ -126,7 +126,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     },
     ref,
   ) => {
-    const { registerShortcut } = shortcutManager();
+    const { registerShortcut, unregisterShortcut } = shortcutManager();
 
     const colorShortKeyMap: Record<Color, ShortcutKey> = {
       검정: SHORTCUT_KEYS.BLACK_COLOR.key,
@@ -142,6 +142,14 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       registerShortcut(SHORTCUT_KEYS.UNDO.key, () => onUndo());
       registerShortcut(SHORTCUT_KEYS.REDO.key, () => onRedo());
       colors.forEach((color) => registerShortcut(colorShortKeyMap[color.color], () => color.onClick()));
+
+      return () => {
+        unregisterShortcut(SHORTCUT_KEYS.PEN.key);
+        unregisterShortcut(SHORTCUT_KEYS.FILL.key);
+        unregisterShortcut(SHORTCUT_KEYS.UNDO.key);
+        unregisterShortcut(SHORTCUT_KEYS.REDO.key);
+        colors.forEach((color) => unregisterShortcut(colorShortKeyMap[color.color]));
+      };
     }, [onUndo, onRedo]);
 
     return (

@@ -83,7 +83,7 @@ export const useDropdown = ({ shortcutKey, handleChange, options }: UseDropdown)
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const { registerShortcut } = shortcutManager();
+  const { registerShortcut, unregisterShortcut } = shortcutManager();
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
@@ -102,6 +102,7 @@ export const useDropdown = ({ shortcutKey, handleChange, options }: UseDropdown)
   // 드롭다운 토글 단축키 적용
   useEffect(() => {
     registerShortcut(shortcutKey, toggleDropdown);
+    return () => unregisterShortcut(shortcutKey);
   }, []);
 
   const handleKeyDown = useCallback(

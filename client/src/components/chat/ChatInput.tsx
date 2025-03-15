@@ -22,7 +22,7 @@ export const ChatInput = memo(() => {
   // 챗 액션
   const chatActions = useChatSocketStore((state) => state.actions);
 
-  const { registerShortcut } = shortcutManager();
+  const { registerShortcut, unregisterShortcut } = shortcutManager();
 
   const shouldDisableInput = useMemo(() => {
     const ispainters = roundAssignedRole !== PlayerRole.GUESSER;
@@ -63,6 +63,8 @@ export const ChatInput = memo(() => {
         inputRef.current?.blur();
       }
     });
+
+    return () => unregisterShortcut(SHORTCUT_KEYS.CHAT.key);
   }, [inputMessage]);
 
   return (

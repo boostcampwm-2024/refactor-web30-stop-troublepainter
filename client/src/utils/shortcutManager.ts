@@ -35,9 +35,9 @@ export function shortcutManager() {
     shortcutMap.set(key.toLowerCase(), handler);
   };
 
-  const clearShortcuts = () => {
-    shortcutMap.clear();
+  const unregisterShortcut = (key: string) => {
+    shortcutMap.delete(key.toLowerCase());
   };
 
-  return { handleKeyDown, registerShortcut, clearShortcuts };
+  return { handleKeyDown, registerShortcut, unregisterShortcut };
 }

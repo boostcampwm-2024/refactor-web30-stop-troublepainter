@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import BackgroundMusicButton from '@/components/bgm-button/BackgroundMusicButton';
 import HelpContainer from '@/components/ui/HelpContainer';
+import { useShortcutKeys } from '@/hooks/useShortcutKeys';
 import { playerIdStorageUtils } from '@/utils/playerIdStorage';
 
 const RootLayout = () => {
@@ -9,6 +10,9 @@ const RootLayout = () => {
   useEffect(() => {
     playerIdStorageUtils.removeAllPlayerIds();
   }, []);
+
+  // 단축키 활성화
+  useShortcutKeys();
 
   return (
     <div className="relative min-h-screen min-w-80 bg-violet-950 bg-fixed antialiased">

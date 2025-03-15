@@ -1,11 +1,8 @@
 import { InviteButton } from '@/components/lobby/InviteButton';
 import { StartButton } from '@/components/lobby/StartButton';
 import { Setting } from '@/components/room-setting/Setting';
-import { usePageShortcutKeys } from '@/hooks/usePageShortcutKeys';
 
 const LobbyPage = () => {
-  usePageShortcutKeys();
-
   return (
     <>
       {/* 중앙 영역 - 대기 화면 */}

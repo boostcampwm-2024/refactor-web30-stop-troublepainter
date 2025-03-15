@@ -30,7 +30,7 @@ export const useGameStart = () => {
   const room = useGameSocketStore((state) => state.room);
   const currentPlayerId = useGameSocketStore((state) => state.currentPlayerId);
 
-  const { registerShortcut } = shortcutManager();
+  const { registerShortcut, unregisterShortcut } = shortcutManager();
 
   const buttonConfig = useMemo(() => {
     if (!isHost) return START_BUTTON_STATUS.NOT_HOST;
@@ -47,6 +47,7 @@ export const useGameStart = () => {
   // 게임 초대 단축키 적용
   useEffect(() => {
     registerShortcut(SHORTCUT_KEYS.GAME_START.key, () => void handleStartGame());
+    return () => unregisterShortcut(SHORTCUT_KEYS.GAME_START.key);
   }, [handleStartGame]);
 
   return {

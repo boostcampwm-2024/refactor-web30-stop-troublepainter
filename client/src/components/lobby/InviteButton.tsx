@@ -8,7 +8,7 @@ import { shortcutManager } from '@/utils/shortcutManager';
 export const InviteButton = () => {
   const [copied, setCopied] = useState(false);
   const actions = useToastStore((state) => state.actions);
-  const { registerShortcut } = shortcutManager();
+  const { registerShortcut, unregisterShortcut } = shortcutManager();
 
   const handleCopyInvite = async () => {
     if (copied) return;
@@ -36,6 +36,7 @@ export const InviteButton = () => {
   // 게임 초대 단축키 적용
   useEffect(() => {
     registerShortcut(SHORTCUT_KEYS.GAME_INVITE.key, () => void handleCopyInvite());
+    return () => unregisterShortcut(SHORTCUT_KEYS.GAME_INVITE.key);
   }, []);
 
   return (
