@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
-import { useShortcuts } from '@/hooks/useShortcuts';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
+import { shortcutManager } from '@/utils/shortcutManager';
 
 export const START_BUTTON_STATUS = {
   NOT_HOST: {
@@ -29,6 +30,8 @@ export const useGameStart = () => {
   const room = useGameSocketStore((state) => state.room);
   const currentPlayerId = useGameSocketStore((state) => state.currentPlayerId);
 
+  const { registerShortcut } = shortcutManager();
+
   const buttonConfig = useMemo(() => {
     if (!isHost) return START_BUTTON_STATUS.NOT_HOST;
     if (players.length < 4) return START_BUTTON_STATUS.NOT_ENOUGH_PLAYERS;
@@ -42,12 +45,9 @@ export const useGameStart = () => {
   }, [room, buttonConfig.disabled, room?.roomId, currentPlayerId]);
 
   // 게임 초대 단축키 적용
-  useShortcuts([
-    {
-      key: 'GAME_START',
-      action: () => void handleStartGame(),
-    },
-  ]);
+  useEffect(() => {
+    registerShortcut(SHORTCUT_KEYS.GAME_START.key, () => void handleStartGame());
+  }, [handleStartGame]);
 
   return {
     isHost,

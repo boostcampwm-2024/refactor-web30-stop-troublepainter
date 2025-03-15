@@ -1,13 +1,13 @@
 import { KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
-import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
-import { useShortcuts } from '@/hooks/useShortcuts';
+import { ShortcutKey } from '@/types/shorcut.types';
+import { shortcutManager } from '@/utils/shortcutManager';
 
 /**
  * 드롭다운을 제어하기 위한 커스텀 훅의 Props 인터페이스입니다.
  */
 interface UseDropdown {
   /** 드롭다운을 열고 닫을 수 있는 키보드 단축키 입니다. `SHORTCUT_KEYS`의 키를 타입으로 가집니다. */
-  shortcutKey?: keyof typeof SHORTCUT_KEYS;
+  shortcutKey: ShortcutKey;
 
   /**
    * 옵션이 선택되었을 때 호출되는 콜백 함수입니다.
@@ -83,11 +83,12 @@ export const useDropdown = ({ shortcutKey, handleChange, options }: UseDropdown)
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const { registerShortcut } = shortcutManager();
 
-  const toggleDropdown = useCallback(() => {
+  const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
     setFocusedIndex(-1);
-  }, []);
+  };
 
   const handleOptionClick = useCallback(
     (value: string) => {
@@ -99,12 +100,9 @@ export const useDropdown = ({ shortcutKey, handleChange, options }: UseDropdown)
   );
 
   // 드롭다운 토글 단축키 적용
-  useShortcuts([
-    {
-      key: shortcutKey || null,
-      action: toggleDropdown,
-    },
-  ]);
+  useEffect(() => {
+    registerShortcut(shortcutKey, toggleDropdown);
+  }, []);
 
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
