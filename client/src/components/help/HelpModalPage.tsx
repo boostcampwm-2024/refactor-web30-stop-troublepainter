@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import Indicator from './Indicator';
 import { HelpPageProps } from '@/types/help.types';
 import { cn } from '@/utils/cn';
 
-const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pagenation, setPageIndex }: HelpPageProps) => {
+const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pageIndicator, setPageIndex }: HelpPageProps) => {
   useEffect(() => {
     const loadAnimation = async () => {
       const response = await fetch(pageData.img);
@@ -37,22 +38,7 @@ const HelpPage = ({ pageData, isModalOpened, dotLottieRefCallback, pagenation, s
           </div>
         </article>
       </section>
-      <div className="relative top-5 flex flex-row items-center justify-center p-5">
-        {pagenation.map((isSelect, i) => {
-          return (
-            <button
-              key={i}
-              className={cn(
-                'mx-1.5 box-content h-2.5 w-2.5 rounded-full md:h-3 md:w-3',
-                isSelect ? 'border-4 border-halfbaked-300 bg-chartreuseyellow-300' : 'bg-eastbay-600',
-              )}
-              onClick={() => {
-                setPageIndex(i);
-              }}
-            />
-          );
-        })}
-      </div>
+      <Indicator pageData={pageData} pageIndicator={pageIndicator} setPageIndex={setPageIndex} />
     </div>
   );
 };

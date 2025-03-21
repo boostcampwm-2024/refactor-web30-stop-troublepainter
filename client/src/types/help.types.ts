@@ -1,4 +1,4 @@
-import { KeyboardEvent } from 'react';
+import { KeyboardEvent, RefObject, MouseEvent, TouchEvent } from 'react';
 import { DotLottie } from '@lottiefiles/dotlottie-react';
 
 export interface PageData {
@@ -7,16 +7,44 @@ export interface PageData {
   cache: string | null;
 }
 
-export interface HelpRollingModalProps {
+export interface HelpModalContainerProps {
   isModalOpened: boolean;
   handleCloseModal: () => void;
   handleKeyDown: (e: KeyboardEvent<Element>) => void;
+}
+
+export interface HelpModalUIProps {
+  isModalOpened: boolean;
+  handleCloseModal: () => void;
+  handleKeyDown: (e: KeyboardEvent<Element>) => void;
+  pageData: PageData[];
+  pageIndex: number;
+  setPageIndex: (index: number) => void;
+  pageIndicator: boolean[];
+  dotLottieRefCallback: (dot: DotLottie) => void;
+  handleTouchStart: (e: TouchEvent<HTMLDivElement>) => void;
+  handleTouchEnd: () => void;
+  handleTouchMove: (e: TouchEvent<HTMLDivElement>) => void;
+  changePageIndex: (rightDir: boolean) => void;
 }
 
 export interface HelpPageProps {
   pageData: PageData;
   isModalOpened: boolean;
   dotLottieRefCallback: (dot: DotLottie) => void;
-  pagenation: boolean[];
+  pageIndicator: boolean[];
   setPageIndex: (index: number) => void;
+}
+
+export interface IndicatorProps {
+  pageData: PageData;
+  pageIndicator: boolean[];
+  setPageIndex: (index: number) => void;
+}
+
+export interface BackgroundCanvasUIProps {
+  className: string;
+  cursorCanvasRef: RefObject<HTMLCanvasElement>;
+  handleMouseLeave: () => void;
+  handleMouseMove: (e: MouseEvent<HTMLCanvasElement>) => void;
 }
