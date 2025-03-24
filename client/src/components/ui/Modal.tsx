@@ -18,6 +18,8 @@ const Modal = ({ className, handleKeyDown, closeModal, isModalOpened, title, chi
   useEffect(() => {
     if (isModalOpened && modalRef.current) {
       modalRef.current.focus();
+    } else if (!isModalOpened && modalRef.current) {
+      modalRef.current.blur();
     }
   }, [isModalOpened]);
 
@@ -48,7 +50,6 @@ const Modal = ({ className, handleKeyDown, closeModal, isModalOpened, title, chi
         )}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
-        tabIndex={0}
         {...props}
       >
         {title && (

@@ -1,14 +1,14 @@
 import { HTMLAttributes } from 'react';
 import ArrowDownIcon from '@/assets/arrow.svg';
-import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { useDropdown } from '@/hooks/useDropdown';
+import { ShortcutKey } from '@/types/shorcut.types';
 import { cn } from '@/utils/cn';
 
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
   options: string[];
   handleChange: (value: string) => void;
   selectedValue: string;
-  shortcutKey?: keyof typeof SHORTCUT_KEYS;
+  shortcutKey: ShortcutKey;
 }
 
 const Dropdown = ({ options, handleChange, selectedValue, shortcutKey, className, ...props }: DropdownProps) => {
