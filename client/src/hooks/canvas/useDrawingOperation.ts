@@ -106,8 +106,10 @@ export const useDrawingOperation = (
       }
       case 2: {
         // 두 점은 직선으로 연결
+        const mid1x = (points[0].x + points[1].x) >> 1;
+        const mid1y = (points[0].y + points[1].y) >> 1;
         ctx.moveTo(points[0].x, points[0].y);
-        ctx.lineTo(points[1].x, points[1].y);
+        ctx.lineTo(mid1x, mid1y);
         ctx.stroke();
         break;
       }
