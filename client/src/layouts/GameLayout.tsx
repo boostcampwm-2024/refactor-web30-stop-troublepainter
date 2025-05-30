@@ -3,7 +3,6 @@ import { ChatContatiner } from '@/components/chat/ChatContatiner';
 import BackgroundContainer from '@/components/main/BackgroundCanvasContainer';
 import { NavigationModal } from '@/components/modal/NavigationModal';
 import { PlayerCardList } from '@/components/player/PlayerCardList';
-import BackgroundImage from '@/components/ui/BackgroundImage';
 import { Loading } from '@/components/ui/Loading';
 import { useGameSocket } from '@/hooks/socket/useGameSocket';
 import BrowserNavigationGuard from '@/layouts/BrowserNavigationGuard';
