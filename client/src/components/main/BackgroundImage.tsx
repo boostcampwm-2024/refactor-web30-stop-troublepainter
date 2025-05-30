@@ -1,18 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import tiny from '@/assets/background-tiny.png';
 import { CDN } from '@/constants/cdn';
 import { cn } from '@/utils/cn';
 
 const BackgroundImage = ({ className }: { className: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  useEffect(() => {
-    const img = imgRef.current;
-    if (img) {
-      img.onload = () => setIsLoaded(true);
-    }
-  }, [imgRef.current]);
 
   return (
     <>
@@ -36,7 +28,7 @@ const BackgroundImage = ({ className }: { className: string }) => {
             'h-full w-full object-cover transition-opacity duration-300',
             isLoaded ? 'opacity-100' : 'opacity-0',
           )}
-          ref={imgRef}
+          onLoad={() => setIsLoaded(true)}
           loading="lazy"
           decoding="async"
         />
