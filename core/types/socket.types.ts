@@ -146,12 +146,12 @@ export interface CheckAnswerRequest {
 }
 
 export interface DrawRequest {
-  drawingData: CRDTMessage;
+  drawingData: CRDTMessage<DrawingData>;
 }
 
 export interface DrawUpdateResponse {
   playerId: string;
-  drawingData: CRDTMessage;
+  drawingData: CRDTMessage<DrawingData>;
 }
 
 export interface DrawTimeEndedResponse {

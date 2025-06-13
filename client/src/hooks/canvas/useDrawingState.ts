@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LWWMap } from '@troublepainter/core';
+import { DrawingData, LWWMap } from '@troublepainter/core';
 import { useParams } from 'react-router-dom';
 import { COLORS_INFO, DRAWING_MODE, LINEWIDTH_VARIABLE, DEFAULT_MAX_PIXELS } from '@/constants/canvasConstants';
 import { useToastStore } from '@/stores/toast.store';
-import { StrokeHistoryEntry } from '@/types/canvas.types';
 import { DrawingMode } from '@/types/canvas.types';
 import { playerIdStorageUtils } from '@/utils/playerIdStorage';
 
@@ -84,8 +83,8 @@ export const useDrawingState = (options?: { maxPixels?: number }) => {
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
 
-  const crdtRef = useRef<LWWMap>();
-  const strokeHistoryRef = useRef<StrokeHistoryEntry[]>([]);
+  const crdtRef = useRef<LWWMap<DrawingData>>();
+  const strokeHistoryRef = useRef<string[][]>([]);
   const currentStrokeIdsRef = useRef<string[]>([]);
   const historyPointerRef = useRef<number>(-1);
 
@@ -93,13 +92,13 @@ export const useDrawingState = (options?: { maxPixels?: number }) => {
     crdtRef.current = new LWWMap(currentPlayerId || 'player');
   }, [currentPlayerId]);
 
-  const updateHistoryState = useCallback(() => {
-    const localHistory = strokeHistoryRef.current.filter((entry) => entry.isLocal);
-    const currentLocalIndex = localHistory.findIndex((_, index) => index === historyPointerRef.current);
+  const updateHistoryState = () => {
+    const localHistory = strokeHistoryRef.current;
+    const indexPointer = historyPointerRef.current;
 
-    setCanUndo(currentLocalIndex >= 0);
-    setCanRedo(currentLocalIndex < localHistory.length - 1);
-  }, []);
+    setCanUndo(indexPointer >= 0);
+    setCanRedo(indexPointer < localHistory.length - 1);
+  };
 
   const checkInkAvailability = useCallback(() => {
     if (inkRemaining <= 0) {

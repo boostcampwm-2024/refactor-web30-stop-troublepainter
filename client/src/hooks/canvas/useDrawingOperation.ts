@@ -140,10 +140,10 @@ export const useDrawingOperation = (
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const activeStrokes = state.crdtRef.current.getActiveStrokes();
-    for (const { stroke } of activeStrokes) {
-      if (stroke.points.length > 3) applyFill(stroke);
-      else drawStroke(stroke);
+    const sortedStrokes = state.crdtRef.current.sortedStrokes;
+    for (const { value: drawingData } of sortedStrokes) {
+      if (drawingData.points.length > 3) applyFill(drawingData);
+      else drawStroke(drawingData);
     }
   }, [drawStroke]);
 

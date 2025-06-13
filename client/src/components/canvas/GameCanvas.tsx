@@ -10,7 +10,6 @@ import { useDrawingSocket } from '@/hooks/socket/useDrawingSocket';
 import { useCoordinateScale } from '@/hooks/useCoordinateScale';
 import { CanvasEventHandlers } from '@/types/canvas.types';
 import { getCanvasContext } from '@/utils/getCanvasContext';
-import { getCanvasUint8Array } from '@/utils/getCanvasUint8Array';
 import { getDrawPoint } from '@/utils/getDrawPoint';
 
 interface GameCanvasProps {
@@ -51,14 +50,7 @@ interface GameCanvasProps {
  *
  * @category Components
  */
-const GameCanvas = ({
-  role,
-  isHost,
-  maxPixels = DEFAULT_MAX_PIXELS,
-  currentRound,
-  roomStatus,
-  isHidden,
-}: GameCanvasProps) => {
+const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomStatus, isHidden }: GameCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cursorCanvasRef = useRef<HTMLCanvasElement>(null);
   const { convertCoordinate } = useCoordinateScale(MAINCANVAS_RESOLUTION_WIDTH, canvasRef);
@@ -79,13 +71,13 @@ const GameCanvas = ({
     canRedo,
     undo,
     redo,
-    getAllDrawingData,
+    makeCRDTSyncMessage,
     resetCanvas,
   } = useDrawing(canvasRef, roomStatus, {
     maxPixels,
   });
 
-  useEffect(() => {
+  /*   useEffect(() => {
     if (roomStatus !== RoomStatus.DRAWING || !isHost) return;
 
     const sendCanvasImage = async () => {
@@ -99,7 +91,7 @@ const GameCanvas = ({
     }, 10000);
 
     return () => clearInterval(canvasCaptureInterval);
-  }, [roomStatus, isHost]);
+  }, [roomStatus, isHost]); */
 
   useEffect(() => {
     resetCanvas();
@@ -114,7 +106,7 @@ const GameCanvas = ({
     onSubmitRequest: () => {
       if (!isConnected) return;
 
-      const allDrawingData = getAllDrawingData();
+      const allDrawingData = makeCRDTSyncMessage();
       if (!allDrawingData) return;
 
       void gameSocketHandlers.submittedDrawing(allDrawingData);
@@ -199,14 +191,11 @@ const GameCanvas = ({
   }, [redo, isConnected]);
 
   const canvasEventHandlers: CanvasEventHandlers = {
-    onMouseDown: handleDrawStart,
-    onMouseMove: handleDrawMove,
-    onMouseUp: handleDrawEnd,
-    onMouseLeave: handleDrawLeave,
-    onTouchStart: handleDrawStart,
-    onTouchMove: handleDrawMove,
-    onTouchEnd: handleDrawEnd,
-    onTouchCancel: handleDrawEnd,
+    onPointerDown: handleDrawStart,
+    onPointerMove: handleDrawMove,
+    onPointerUp: handleDrawEnd,
+    onPointerLeave: handleDrawLeave,
+    onPointerCancel: handleDrawEnd,
   };
 
   return (
