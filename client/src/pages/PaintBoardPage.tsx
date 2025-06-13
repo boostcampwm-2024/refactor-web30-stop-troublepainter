@@ -42,7 +42,6 @@ const PaintBoardPage = () => {
         applyDrawing(response.drawingData);
       }
     },
-    onSubmitRequest: () => {},
   });
 
   const colorsWithSelect = COLORS_INFO.map((color) => ({

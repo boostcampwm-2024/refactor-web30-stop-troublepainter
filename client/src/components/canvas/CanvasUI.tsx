@@ -143,6 +143,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
               'absolute left-0 top-0 h-full w-full object-contain',
               isDrawable ? 'touch-none' : 'pointer-events-none',
             )}
+            role="img"
             aria-label={isDrawable ? '그림판' : '그림 보기'}
           />
           <canvas
@@ -153,10 +154,11 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
               'absolute left-0 top-0 h-full w-full cursor-none object-contain',
               isDrawable ? 'touch-none' : 'pointer-events-none',
             )}
-            aria-label={isDrawable ? '그림판' : '그림 보기'}
+            role="img"
+            aria-label={isDrawable ? '그림판 마우스' : '그림 보기'}
             {...canvasEvents}
           />
-          {isDrawable && (
+          {isDrawable && maxPixels !== Infinity && (
             <div className={cn('absolute bottom-1 right-1')}>
               <InkGauge remainingPixels={inkRemaining} maxPixels={maxPixels} />
             </div>
