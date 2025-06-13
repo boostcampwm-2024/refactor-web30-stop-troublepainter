@@ -1,3 +1,8 @@
+export enum DrawType {
+  LINE = 'line',
+  FILL = 'fill',
+}
+
 export interface Point {
   x: number;
   y: number;
@@ -9,20 +14,21 @@ export interface StrokeStyle {
 }
 
 export interface DrawingData {
+  type: DrawType;
   points: Point[];
   style: StrokeStyle;
-  timestamp: number;
 }
 
 export type RegisterState<T> = {
   peerId: string;
+  createTime: number;
   timestamp: number;
   value: T;
-  isDeactivated?: boolean;
+  activated: boolean;
 };
 
-export type MapState = {
-  [key: string]: RegisterState<DrawingData | null>;
+export type MapState<T> = {
+  [key: string]: RegisterState<T | null>;
 };
 
 export enum CRDTMessageTypes {
@@ -30,18 +36,17 @@ export enum CRDTMessageTypes {
   UPDATE = 'update',
 }
 
-export type CRDTSyncMessage = {
+export type CRDTSyncMessage<T> = {
   type: CRDTMessageTypes.SYNC;
-  state: MapState;
+  state: MapState<T>;
 };
 
-export type CRDTUpdateMessage = {
+export type CRDTUpdateMessage<T> = {
   type: CRDTMessageTypes.UPDATE;
   state: {
     key: string;
-    register: RegisterState<DrawingData | null>;
-    isDeactivated?: boolean;
+    register: RegisterState<T | null>;
   };
 };
 
-export type CRDTMessage = CRDTSyncMessage | CRDTUpdateMessage;
+export type CRDTMessage<T> = CRDTSyncMessage<T> | CRDTUpdateMessage<T>;

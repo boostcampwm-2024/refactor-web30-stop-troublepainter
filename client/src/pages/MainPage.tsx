@@ -20,16 +20,26 @@ const MainPage = () => {
     ]);
   };
 
+  const preloadPaintBoardPage = async () => {
+    await Promise.all([import('@/pages/PaintBoardPage')]);
+  };
+
   useEffect(() => {
     // 현재 URL을 루트로 변경
     window.history.replaceState(null, '', '/');
   }, []);
 
   const handleCreateRoom = async () => {
-    // transitionTo(`/lobby/${roomId}`);
     const response = await createRoom();
     if (response && response.roomId) {
       transitionTo(`/lobby/${response.roomId}`);
+    }
+  };
+
+  const handleCreatePaintBoardRoom = async () => {
+    const response = await createRoom();
+    if (response && response.roomId) {
+      transitionTo(`/paint-board/${response.roomId}`);
     }
   };
 
@@ -47,14 +57,24 @@ const MainPage = () => {
           <Logo variant="main" className="w-full transition duration-300 hover:scale-110 hover:brightness-[1.12]" />
         </div>
 
-        <Button
-          onClick={() => void handleCreateRoom()}
-          disabled={isLoading || isExiting}
-          className="-z-10 h-12 max-w-72 animate-pulse"
-          onPointerEnter={() => void preloadGamePage()}
-        >
-          {isLoading || isExiting ? '방 생성중...' : '방 만들기'}
-        </Button>
+        <div className="-z-10 flex h-12 w-full flex-wrap items-center justify-center gap-6">
+          <Button
+            onClick={() => void handleCreateRoom()}
+            disabled={isLoading || isExiting}
+            className="h-full max-w-60 animate-pulse"
+            onPointerEnter={() => void preloadGamePage()}
+          >
+            {isLoading || isExiting ? '방 생성중...' : '방 만들기'}
+          </Button>
+          <Button
+            onClick={() => void handleCreatePaintBoardRoom()}
+            disabled={isLoading || isExiting}
+            className="h-full max-w-60 animate-pulse"
+            onPointerEnter={() => void preloadPaintBoardPage()}
+          >
+            체험하기
+          </Button>
+        </div>
       </main>
     </PixelTransitionContainer>
   );

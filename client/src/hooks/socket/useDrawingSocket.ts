@@ -9,7 +9,7 @@ import { useSocketStore } from '@/stores/socket/socket.store';
 
 interface UseDrawingSocketProps {
   onDrawUpdate: (response: DrawUpdateResponse) => void;
-  onSubmitRequest: () => void;
+  onSubmitRequest?: () => void;
 }
 
 /**
@@ -72,7 +72,7 @@ export const useDrawingSocket = ({ onDrawUpdate, onSubmitRequest }: UseDrawingSo
 
   const handleSubmitDrawing = useCallback(() => {
     // console.log('Received submitDrawing event');
-    onSubmitRequest();
+    if (onSubmitRequest) onSubmitRequest();
   }, [onSubmitRequest]);
 
   useEffect(() => {

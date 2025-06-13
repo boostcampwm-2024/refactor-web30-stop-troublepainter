@@ -1,4 +1,4 @@
-import { MouseEvent, TouchEvent } from 'react';
+import { PointerEvent } from 'react';
 import { DrawingData } from '@troublepainter/core';
 import { DRAWING_MODE } from '@/constants/canvasConstants';
 
@@ -43,12 +43,9 @@ export interface DrawingOptions {
 export type DrawingMode = (typeof DRAWING_MODE)[keyof typeof DRAWING_MODE];
 
 export interface CanvasEventHandlers {
-  onMouseDown?: (e: MouseEvent<HTMLCanvasElement>) => void;
-  onMouseMove?: (e: MouseEvent<HTMLCanvasElement>) => void;
-  onMouseUp?: (e: MouseEvent<HTMLCanvasElement>) => void;
-  onMouseLeave?: (e: MouseEvent<HTMLCanvasElement>) => void;
-  onTouchStart?: (e: TouchEvent<HTMLCanvasElement>) => void;
-  onTouchMove?: (e: TouchEvent<HTMLCanvasElement>) => void;
-  onTouchEnd?: (e: TouchEvent<HTMLCanvasElement>) => void;
-  onTouchCancel?: (e: TouchEvent<HTMLCanvasElement>) => void;
+  onPointerDown?: (e: PointerEvent<HTMLCanvasElement>) => void;
+  onPointerMove?: (e: PointerEvent<HTMLCanvasElement>) => void;
+  onPointerUp?: (e: PointerEvent<HTMLCanvasElement>) => void;
+  onPointerLeave?: (e: PointerEvent<HTMLCanvasElement>) => void;
+  onPointerCancel?: (e: PointerEvent<HTMLCanvasElement>) => void;
 }
