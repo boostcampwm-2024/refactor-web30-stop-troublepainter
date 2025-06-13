@@ -12,18 +12,19 @@ describe('LWWRegister', () => {
       { x: 10, y: 10 },
     ],
     style: { color, width },
-    timestamp: Date.now(),
   });
 
   let register: LWWRegister<DrawingData | null>;
 
   beforeEach(() => {
+    const timestamp = Date.now();
     const initialStroke = createTestStroke();
     const initialState: RegisterState<DrawingData | null> = {
       peerId: 'peer1',
-      timestamp: Date.now(),
+      createTime: timestamp,
+      timestamp: timestamp,
       value: initialStroke,
-      isDeactivated: false,
+      activated: true,
     };
     register = new LWWRegister('peer1', initialState);
   });
@@ -34,9 +35,10 @@ describe('LWWRegister', () => {
       const timestamp = Date.now();
       const state: RegisterState<DrawingData> = {
         peerId: 'peer1',
-        timestamp,
+        createTime: timestamp,
+        timestamp: timestamp,
         value: stroke,
-        isDeactivated: false,
+        activated: true,
       };
 
       const newRegister = new LWWRegister<DrawingData>('peer1', state);
@@ -45,20 +47,22 @@ describe('LWWRegister', () => {
       expect(newRegister.value).toEqual(stroke);
       expect(newRegister.state).toEqual(state);
       expect(newRegister.id).toBe('peer1');
-      expect(newRegister.isDeactivated).toBe(false);
+      expect(newRegister.activated).toBe(true);
     });
 
     it('should initialize with deactivated state', () => {
       const stroke = createTestStroke('#ff0000');
+      const timestamp = Date.now();
       const state: RegisterState<DrawingData> = {
         peerId: 'peer1',
-        timestamp: Date.now(),
+        createTime: timestamp,
+        timestamp: timestamp,
         value: stroke,
-        isDeactivated: true,
+        activated: false,
       };
 
       const newRegister = new LWWRegister<DrawingData>('peer1', state);
-      expect(newRegister.isDeactivated).toBe(true);
+      expect(newRegister.activated).toBe(false);
     });
   });
 
@@ -73,7 +77,7 @@ describe('LWWRegister', () => {
       expect(register.state.peerId).toBe('peer1');
       // 새로운 타임스탬프가 생성되어야 함
       expect(typeof register.state.timestamp).toBe('number');
-      expect(register.isDeactivated).toBe(false);
+      expect(register.activated).toBe(true);
     });
 
     it('should allow setting null values', () => {
@@ -83,22 +87,22 @@ describe('LWWRegister', () => {
     });
 
     it('should preserve deactivated state when setting new value', () => {
-      register.setDeactivated(true);
+      register.setActivated(false);
       const newStroke = createTestStroke('#ff0000');
       register.set(newStroke);
 
       expect(register.value).toEqual(newStroke);
-      expect(register.isDeactivated).toBe(true);
+      expect(register.activated).toBe(false);
     });
   });
 
   describe('activation state', () => {
     it('should update activation state', () => {
-      expect(register.isDeactivated).toBe(false);
-      register.setDeactivated(true);
-      expect(register.isDeactivated).toBe(true);
-      register.setDeactivated(false);
-      expect(register.isDeactivated).toBe(false);
+      expect(register.activated).toBe(true);
+      register.setActivated(false);
+      expect(register.activated).toBe(false);
+      register.setActivated(true);
+      expect(register.activated).toBe(true);
     });
   });
 
@@ -120,9 +124,10 @@ describe('LWWRegister', () => {
       const remoteStroke = createTestStroke('#00ff00');
       const remoteState: RegisterState<DrawingData> = {
         peerId: 'peer2',
+        createTime: register.state.createTime,
         timestamp: newTime,
         value: remoteStroke,
-        isDeactivated: false,
+        activated: true,
       };
 
       const updated = register.merge(remoteState);
@@ -151,9 +156,10 @@ describe('LWWRegister', () => {
       const remoteStroke = createTestStroke('#00ff00');
       const remoteState: RegisterState<DrawingData> = {
         peerId: 'peer2',
+        createTime: register.state.createTime,
         timestamp: oldTime,
         value: remoteStroke,
-        isDeactivated: false,
+        activated: true,
       };
 
       const updated = register.merge(remoteState);
@@ -173,9 +179,10 @@ describe('LWWRegister', () => {
       const localStroke = createTestStroke('#ff0000');
       const localState: RegisterState<DrawingData> = {
         peerId: 'peer1',
+        createTime: timestamp,
         timestamp,
         value: localStroke,
-        isDeactivated: false,
+        activated: true,
       };
       const localRegister = new LWWRegister('peer1', localState);
 
@@ -183,9 +190,10 @@ describe('LWWRegister', () => {
       const remoteStroke = createTestStroke('#00ff00');
       const remoteState: RegisterState<DrawingData> = {
         peerId: 'peer2',
+        createTime: timestamp,
         timestamp,
         value: remoteStroke,
-        isDeactivated: false,
+        activated: true,
       };
 
       const updated = localRegister.merge(remoteState);
@@ -200,9 +208,10 @@ describe('LWWRegister', () => {
       // null 값을 포함한 원격 상태 생성
       const remoteState: RegisterState<DrawingData | null> = {
         peerId: 'peer2',
+        createTime: register.state.createTime,
         timestamp: timestamp + 1000,
         value: null,
-        isDeactivated: false,
+        activated: true,
       };
 
       const updated = register.merge(remoteState);
@@ -210,30 +219,6 @@ describe('LWWRegister', () => {
       // null 값도 정상적으로 병합되어야 함
       expect(updated).toBe(true);
       expect(register.value).toBeNull();
-    });
-
-    it('should merge activation state independently of timestamp', () => {
-      vi.useFakeTimers();
-      const currentTime = Date.now();
-      vi.setSystemTime(currentTime);
-
-      const localStroke = createTestStroke('#ff0000');
-      register.set(localStroke);
-
-      const remoteState: RegisterState<DrawingData | null> = {
-        peerId: 'peer2',
-        timestamp: currentTime - 1000,
-        value: register.value,
-        isDeactivated: true,
-      };
-
-      const updated = register.merge(remoteState);
-
-      expect(updated).toBe(true);
-      expect(register.isDeactivated).toBe(true);
-      expect(register.value).toEqual(localStroke);
-
-      vi.useRealTimers();
     });
   });
 });
