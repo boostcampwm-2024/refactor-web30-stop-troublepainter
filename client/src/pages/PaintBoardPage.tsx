@@ -1,7 +1,7 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useRef } from 'react';
 import { RoomStatus } from '@troublepainter/core';
 import { Canvas } from '@/components/canvas/CanvasUI';
-import { COLORS_INFO, DEFAULT_MAX_PIXELS, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
+import { COLORS_INFO, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
 import { handleInCanvas, handleOutCanvas } from '@/handlers/canvas/cursorInOutHandler';
 import { drawingSocketHandlers } from '@/handlers/socket/drawingSocket.handler';
 import { useDrawing } from '@/hooks/canvas/useDrawing';
@@ -33,7 +33,7 @@ const PaintBoardPage = () => {
     undo,
     redo,
   } = useDrawing(canvasRef, RoomStatus.DRAWING, {
-    maxPixels: DEFAULT_MAX_PIXELS,
+    maxPixels: Infinity,
   });
 
   const { isConnected } = useDrawingSocket({
@@ -133,7 +133,7 @@ const PaintBoardPage = () => {
       setBrushSize={setBrushSize}
       drawingMode={drawingMode}
       onDrawingModeChange={setDrawingMode}
-      maxPixels={DEFAULT_MAX_PIXELS}
+      maxPixels={Infinity}
       canvasEvents={canvasEventHandlers}
       canUndo={canUndo}
       canRedo={canRedo}

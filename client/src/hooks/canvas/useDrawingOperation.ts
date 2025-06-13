@@ -1,5 +1,5 @@
 import { RefObject, useCallback } from 'react';
-import { DrawingData, Point, StrokeStyle } from '@troublepainter/core';
+import { DrawingData, DrawType, Point, StrokeStyle } from '@troublepainter/core';
 import { useDrawingState } from './useDrawingState';
 import { MAINCANVAS_RESOLUTION_HEIGHT, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
 import { RGBA } from '@/types/canvas.types';
@@ -65,6 +65,7 @@ const checkOutsidePoint = (canvas: HTMLCanvasElement, point: Point) => {
  * @property redrawCanvas - 저장된 스트로크들을 기반으로 전체 캔버스를 다시 그리는 함수
  * @property applyFill - 소켓에서 받아온 페인팅 좌표 배열을 그리는 함수
  * @property floodFill - 지정된 좌표에서 영역 채우기를 수행하는 함수
+ * @property renderStroke - 그림 타입에 따라 그림을 그리는 함수
  *
  * @category Hooks
  */
@@ -81,6 +82,22 @@ export const useDrawingOperation = (
     }),
     [currentColor, brushSize],
   );
+
+  const renderStroke = (drawingData: DrawingData) => {
+    switch (drawingData.type) {
+      case DrawType.FILL:
+        const { x, y } = drawingData.points[0];
+        floodFill(x, y, drawingData.style.color);
+        break;
+
+      case DrawType.LINE:
+        if (drawingData.points.length > 3) {
+          applyFill(drawingData);
+        } else {
+          drawStroke(drawingData);
+        }
+    }
+  };
 
   const drawStroke = (drawingData: DrawingData): void => {
     const { ctx } = getCanvasContext(canvasRef);
@@ -142,8 +159,7 @@ export const useDrawingOperation = (
 
     const sortedStrokes = state.crdtRef.current.sortedStrokes;
     for (const { value: drawingData } of sortedStrokes) {
-      if (drawingData.points.length > 3) applyFill(drawingData);
-      else drawStroke(drawingData);
+      renderStroke(drawingData);
     }
   }, [drawStroke]);
 
@@ -167,11 +183,11 @@ export const useDrawingOperation = (
   };
 
   const floodFill = useCallback(
-    (startX: number, startY: number) => {
+    (startX: number, startY: number, color: string) => {
       const { canvas, ctx } = getCanvasContext(canvasRef);
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const pixelArray = imageData.data;
-      const fillColor = hexToRGBA(currentColor);
+      const fillColor = hexToRGBA(color);
 
       const startPos = (startY * canvas.width + startX) * 4;
       const startColor = {
@@ -240,6 +256,7 @@ export const useDrawingOperation = (
     getCurrentStyle,
     drawStroke,
     redrawCanvas,
+    renderStroke,
     applyFill,
     floodFill,
     clearCanvas,

@@ -1,8 +1,9 @@
 import { LWWRegister } from '@/crdt/LWWRegister';
-import { DrawingData, RegisterState } from '@/types/crdt.types';
+import { DrawingData, DrawType, RegisterState } from '@/types/crdt.types';
 
 describe('LWWRegister', () => {
   const createTestStroke = (color: string = '#000000', width: number = 2): DrawingData => ({
+    type: DrawType.LINE,
     points: [
       { x: 0, y: 0 },
       { x: 2, y: 2 },

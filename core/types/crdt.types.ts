@@ -1,3 +1,8 @@
+export enum DrawType {
+  LINE = 'line',
+  FILL = 'fill',
+}
+
 export interface Point {
   x: number;
   y: number;
@@ -9,6 +14,7 @@ export interface StrokeStyle {
 }
 
 export interface DrawingData {
+  type: DrawType;
   points: Point[];
   style: StrokeStyle;
 }

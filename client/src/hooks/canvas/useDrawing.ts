@@ -7,6 +7,7 @@ import {
   CRDTSyncMessage,
   RoomStatus,
   DrawingData,
+  DrawType,
 } from '@troublepainter/core';
 import { useDrawingOperation } from './useDrawingOperation';
 import { useDrawingState } from './useDrawingState';
@@ -89,21 +90,11 @@ export const useDrawing = (
   const currentDrawingPoints = useRef<Point[]>([]);
 
   const createDrawingData = useCallback(
-    (points: Point[]): DrawingData => ({
+    (points: Point[], type: DrawType): DrawingData => ({
+      type,
       points,
       style: operation.getCurrentStyle(),
     }),
-    [operation],
-  );
-
-  const renderStroke = useCallback(
-    (strokeData: DrawingData) => {
-      if (strokeData.points.length > 3) {
-        operation.applyFill(strokeData);
-      } else {
-        operation.drawStroke(strokeData);
-      }
-    },
     [operation],
   );
 
@@ -144,8 +135,8 @@ export const useDrawing = (
 
       const drawingData =
         state.drawingMode === DRAWING_MODE.FILL
-          ? operation.floodFill(Math.floor(point.x), Math.floor(point.y))
-          : createDrawingData([point]);
+          ? createDrawingData([{ x: Math.floor(point.x), y: Math.floor(point.y) }], DrawType.FILL)
+          : createDrawingData([point], DrawType.LINE);
 
       if (!drawingData) return null;
 
@@ -153,11 +144,11 @@ export const useDrawing = (
       state.currentStrokeIdsRef.current.push(node.key);
 
       if (node.next !== null) operation.redrawCanvas();
-      else renderStroke(drawingData);
+      else operation.renderStroke(drawingData);
 
       return makeCRDTUpdateMessage(node.key);
     },
-    [state, operation, createDrawingData, makeCRDTUpdateMessage, renderStroke],
+    [state, operation, createDrawingData, makeCRDTUpdateMessage],
   );
 
   const continueDrawing = useCallback(
@@ -175,12 +166,12 @@ export const useDrawing = (
       // 최근 3개 점 유지
       currentDrawingPoints.current.push(point);
 
-      const drawingData = createDrawingData([...currentDrawingPoints.current]);
+      const drawingData = createDrawingData([...currentDrawingPoints.current], DrawType.LINE);
       const node = state.crdtRef.current.createRegister(drawingData);
       state.currentStrokeIdsRef.current.push(node.key);
 
       if (node.next !== null) operation.redrawCanvas();
-      else renderStroke(drawingData);
+      else operation.renderStroke(drawingData);
 
       // 점이 3개 이상일 때 그 이전 점 삭제
       if (currentDrawingPoints.current.length >= 3) {
@@ -191,7 +182,7 @@ export const useDrawing = (
       }
       return makeCRDTUpdateMessage(node.key);
     },
-    [state, createDrawingData, makeCRDTUpdateMessage, renderStroke],
+    [state, createDrawingData, makeCRDTUpdateMessage],
   );
 
   const stopDrawing = useCallback(() => {
@@ -283,7 +274,7 @@ export const useDrawing = (
         if (!updated) return;
 
         if (haveToReset) operation.redrawCanvas();
-        else if (register.value) renderStroke(register.value);
+        else if (register.value) operation.renderStroke(register.value);
       }
     },
     [state.currentPlayerId, operation, roomStatus],
@@ -313,7 +304,6 @@ export const useDrawing = (
     makeCRDTSyncMessage,
     makeCRDTUpdateMessage,
     resetCanvas,
-    renderStroke,
     createDrawingData,
   };
 };
