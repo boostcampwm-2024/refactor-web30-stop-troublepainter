@@ -1,17 +1,17 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useRef } from 'react';
 import { RoomStatus } from '@troublepainter/core';
+import { Link } from 'react-router-dom';
 import { Canvas } from '@/components/canvas/CanvasUI';
+import { Logo } from '@/components/ui/Logo';
 import { COLORS_INFO, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
 import { handleInCanvas, handleOutCanvas } from '@/handlers/canvas/cursorInOutHandler';
-import { drawingSocketHandlers } from '@/handlers/socket/drawingSocket.handler';
 import { useDrawing } from '@/hooks/canvas/useDrawing';
-import { useDrawingSocket } from '@/hooks/socket/useDrawingSocket';
 import { useCoordinateScale } from '@/hooks/useCoordinateScale';
 import { CanvasEventHandlers } from '@/types/canvas.types';
 import { getCanvasContext } from '@/utils/getCanvasContext';
 import { getDrawPoint } from '@/utils/getDrawPoint';
 
-const PaintBoardPage = () => {
+const PlaygroundPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cursorCanvasRef = useRef<HTMLCanvasElement>(null);
   const { convertCoordinate } = useCoordinateScale(MAINCANVAS_RESOLUTION_WIDTH, canvasRef);
@@ -24,7 +24,6 @@ const PaintBoardPage = () => {
     drawingMode,
     setDrawingMode,
     startDrawing,
-    applyDrawing,
     continueDrawing,
     stopDrawing,
     canRedo,
@@ -36,14 +35,6 @@ const PaintBoardPage = () => {
     maxPixels: Infinity,
   });
 
-  const { isConnected } = useDrawingSocket({
-    onDrawUpdate: (response) => {
-      if (response) {
-        applyDrawing(response.drawingData);
-      }
-    },
-  });
-
   const colorsWithSelect = COLORS_INFO.map((color) => ({
     ...color,
     isSelected: currentColor === color.backgroundColor,
@@ -51,16 +42,10 @@ const PaintBoardPage = () => {
   }));
 
   const handleDrawStart = (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
-    if (!isConnected) return;
-
     const { canvas } = getCanvasContext(canvasRef);
     const point = getDrawPoint(e, canvas);
     const convertPoint = convertCoordinate(point);
-
-    const drawingData = startDrawing(convertPoint);
-    if (drawingData) {
-      void drawingSocketHandlers.sendDrawing(drawingData);
-    }
+    startDrawing(convertPoint);
   };
 
   const handleDrawMove = (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
@@ -69,11 +54,7 @@ const PaintBoardPage = () => {
     const convertPoint = convertCoordinate(point);
 
     handleInCanvas(cursorCanvasRef, convertPoint, brushSize);
-
-    const drawingData = continueDrawing(convertPoint);
-    if (drawingData) {
-      void drawingSocketHandlers.sendDrawing(drawingData);
-    }
+    continueDrawing(convertPoint);
   };
 
   const handleDrawLeave = (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
@@ -81,35 +62,13 @@ const PaintBoardPage = () => {
     const point = getDrawPoint(e, canvas);
     const convertPoint = convertCoordinate(point);
 
-    const drawingData = continueDrawing(convertPoint);
-    if (drawingData) {
-      void drawingSocketHandlers.sendDrawing(drawingData);
-    }
-
+    continueDrawing(convertPoint);
     handleOutCanvas(cursorCanvasRef);
     stopDrawing();
   };
 
   const handleDrawEnd = () => {
     stopDrawing();
-  };
-
-  const handleUndo = () => {
-    if (!isConnected) return;
-    const updates = undo();
-    if (!updates) return;
-    updates.forEach((update) => {
-      void drawingSocketHandlers.sendDrawing(update);
-    });
-  };
-
-  const handleRedo = () => {
-    if (!isConnected) return;
-    const updates = redo();
-    if (!updates) return;
-    updates.forEach((update) => {
-      void drawingSocketHandlers.sendDrawing(update);
-    });
   };
 
   const canvasEventHandlers: CanvasEventHandlers = {
@@ -121,25 +80,40 @@ const PaintBoardPage = () => {
   };
 
   return (
-    <Canvas
-      inkRemaining={inkRemaining}
-      canvasRef={canvasRef}
-      cursorCanvasRef={cursorCanvasRef}
-      isDrawable={true}
-      isHidden={false}
-      colors={colorsWithSelect}
-      brushSize={brushSize}
-      setBrushSize={setBrushSize}
-      drawingMode={drawingMode}
-      onDrawingModeChange={setDrawingMode}
-      maxPixels={Infinity}
-      canvasEvents={canvasEventHandlers}
-      canUndo={canUndo}
-      canRedo={canRedo}
-      onUndo={handleUndo}
-      onRedo={handleRedo}
-    />
+    <div
+      className={`relative flex min-h-screen flex-col justify-start bg-gradient-to-b from-violet-950 via-violet-800 to-fuchsia-800 before:absolute before:left-0 before:top-0 before:h-full before:w-full before:bg-cover before:bg-center lg:py-5`}
+    >
+      <header className="z-10 flex h-20 items-center justify-center">
+        <Link
+          to={'/'}
+          className="transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
+        >
+          <Logo variant="side" />
+        </Link>
+      </header>
+
+      <main className="flex flex-1 items-center justify-center p-4">
+        <Canvas
+          inkRemaining={inkRemaining}
+          canvasRef={canvasRef}
+          cursorCanvasRef={cursorCanvasRef}
+          isDrawable={true}
+          isHidden={false}
+          colors={colorsWithSelect}
+          brushSize={brushSize}
+          setBrushSize={setBrushSize}
+          drawingMode={drawingMode}
+          onDrawingModeChange={setDrawingMode}
+          maxPixels={Infinity}
+          canvasEvents={canvasEventHandlers}
+          canUndo={canUndo}
+          canRedo={canRedo}
+          onUndo={undo}
+          onRedo={redo}
+        />
+      </main>
+    </div>
   );
 };
 
-export { PaintBoardPage };
+export { PlaygroundPage };

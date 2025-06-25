@@ -21,7 +21,7 @@ const MainPage = () => {
   };
 
   const preloadPaintBoardPage = async () => {
-    await Promise.all([import('@/pages/PaintBoardPage')]);
+    await Promise.all([import('@/pages/PlaygroundPage')]);
   };
 
   useEffect(() => {
@@ -37,10 +37,7 @@ const MainPage = () => {
   };
 
   const handleCreatePaintBoardRoom = async () => {
-    const response = await createRoom();
-    if (response && response.roomId) {
-      transitionTo(`/paint-board/${response.roomId}`);
-    }
+    transitionTo('/playground');
   };
 
   return (
@@ -72,7 +69,7 @@ const MainPage = () => {
             className="h-full max-w-60 animate-pulse"
             onPointerEnter={() => void preloadPaintBoardPage()}
           >
-            체험하기
+            플레이그라운드
           </Button>
         </div>
       </main>

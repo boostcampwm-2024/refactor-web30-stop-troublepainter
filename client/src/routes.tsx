@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import { PaintBoardPage } from './pages/PaintBoardPage';
+import { PlaygroundPage } from './pages/PlaygroundPage';
 
 // Layouts
 const RootLayout = lazy(() => import('@/layouts/RootLayout'));
@@ -22,6 +22,10 @@ export const router = createBrowserRouter(
           element: <MainPage />,
         },
         {
+          path: '/playground',
+          element: <PlaygroundPage />,
+        },
+        {
           element: <GameLayout />,
           children: [
             {
@@ -36,10 +40,6 @@ export const router = createBrowserRouter(
                 void Promise.all([import('@/pages/GameRoomPage'), import('@/pages/ResultPage')]);
                 return null;
               },
-            },
-            {
-              path: '/paint-board/:roomId',
-              element: <PaintBoardPage />,
             },
             {
               path: '/game/:roomId',
