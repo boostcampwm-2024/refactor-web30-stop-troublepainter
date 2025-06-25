@@ -90,10 +90,11 @@ export const useDrawing = (
   const currentDrawingPoints = useRef<Point[]>([]);
 
   const createDrawingData = useCallback(
-    (points: Point[], type: DrawType): DrawingData => ({
+    (points: Point[], type: DrawType, inkRemaining: number): DrawingData => ({
       type,
       points,
       style: operation.getCurrentStyle(),
+      inkRemaining,
     }),
     [operation],
   );
@@ -131,12 +132,26 @@ export const useDrawing = (
       if (state.checkInkAvailability() === false || !state.crdtRef.current) return null;
 
       state.currentStrokeIdsRef.current = [];
-      currentDrawingPoints.current = state.drawingMode === DRAWING_MODE.PEN ? [point] : [];
 
-      const drawingData =
-        state.drawingMode === DRAWING_MODE.FILL
-          ? createDrawingData([{ x: Math.floor(point.x), y: Math.floor(point.y) }], DrawType.FILL)
-          : createDrawingData([point], DrawType.LINE);
+      let drawingData: DrawingData | null;
+
+      switch (state.drawingMode) {
+        case DRAWING_MODE.FILL:
+          currentDrawingPoints.current = [];
+          const [x, y] = [Math.floor(point.x), Math.floor(point.y)];
+          const { pixelCount } = operation.floodFill(x, y, state.currentColor, state.inkRemaining, { dryRun: true });
+          state.setInkRemaining((prev) => Math.max(0, prev - pixelCount));
+          drawingData = createDrawingData([{ x, y }], DrawType.FILL, state.inkRemaining);
+          break;
+
+        case DRAWING_MODE.PEN:
+          currentDrawingPoints.current = [point];
+          drawingData = createDrawingData([point], DrawType.PEN, state.inkRemaining);
+          break;
+
+        default:
+          return null;
+      }
 
       if (!drawingData) return null;
 
@@ -144,7 +159,7 @@ export const useDrawing = (
       state.currentStrokeIdsRef.current.push(node.key);
 
       if (node.next !== null) operation.redrawCanvas();
-      else operation.renderStroke(drawingData);
+      operation.renderStroke(drawingData);
 
       return makeCRDTUpdateMessage(node.key);
     },
@@ -166,7 +181,7 @@ export const useDrawing = (
       // 최근 3개 점 유지
       currentDrawingPoints.current.push(point);
 
-      const drawingData = createDrawingData([...currentDrawingPoints.current], DrawType.LINE);
+      const drawingData = createDrawingData([...currentDrawingPoints.current], DrawType.PEN, state.inkRemaining);
       const node = state.crdtRef.current.createRegister(drawingData);
       state.currentStrokeIdsRef.current.push(node.key);
 

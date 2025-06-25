@@ -1,5 +1,5 @@
 export enum DrawType {
-  LINE = 'line',
+  PEN = 'pen',
   FILL = 'fill',
 }
 
@@ -17,6 +17,7 @@ export interface DrawingData {
   type: DrawType;
   points: Point[];
   style: StrokeStyle;
+  inkRemaining: number;
 }
 
 export type RegisterState<T> = {

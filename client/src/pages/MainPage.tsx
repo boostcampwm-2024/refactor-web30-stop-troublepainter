@@ -36,9 +36,7 @@ const MainPage = () => {
     }
   };
 
-  const handleCreatePaintBoardRoom = async () => {
-    transitionTo('/playground');
-  };
+  const handleMoveToPlayground = () => transitionTo('/playground');
 
   return (
     <PixelTransitionContainer isExiting={isExiting}>
@@ -64,7 +62,7 @@ const MainPage = () => {
             {isLoading || isExiting ? '방 생성중...' : '방 만들기'}
           </Button>
           <Button
-            onClick={() => void handleCreatePaintBoardRoom()}
+            onClick={handleMoveToPlayground}
             disabled={isLoading || isExiting}
             className="h-full max-w-60 animate-pulse"
             onPointerEnter={() => void preloadPaintBoardPage()}

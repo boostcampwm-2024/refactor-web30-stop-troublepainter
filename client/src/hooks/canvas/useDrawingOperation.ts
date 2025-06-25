@@ -87,10 +87,10 @@ export const useDrawingOperation = (
     switch (drawingData.type) {
       case DrawType.FILL:
         const { x, y } = drawingData.points[0];
-        floodFill(x, y, drawingData.style.color);
+        floodFill(x, y, drawingData.style.color, drawingData.inkRemaining);
         break;
 
-      case DrawType.LINE:
+      case DrawType.PEN:
         if (drawingData.points.length > 3) {
           applyFill(drawingData);
         } else {
@@ -183,11 +183,12 @@ export const useDrawingOperation = (
   };
 
   const floodFill = useCallback(
-    (startX: number, startY: number, color: string) => {
+    (startX: number, startY: number, color: string, inkRemaining: number, options: { dryRun?: boolean } = {}) => {
       const { canvas, ctx } = getCanvasContext(canvasRef);
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const pixelArray = imageData.data;
       const fillColor = hexToRGBA(color);
+      const { dryRun = false } = options;
 
       const startPos = (startY * canvas.width + startX) * 4;
       const startColor = {
@@ -234,13 +235,10 @@ export const useDrawingOperation = (
         }
       }
 
-      ctx.putImageData(imageData, 0, 0);
-      setInkRemaining((prev: number) => Math.max(0, prev - pixelCount));
+      if (!dryRun) ctx.putImageData(imageData, 0, 0);
 
       return {
-        points: filledPoints,
-        style: getCurrentStyle(),
-        timestamp: Date.now(),
+        pixelCount,
       };
     },
     [currentColor, inkRemaining, getCurrentStyle, setInkRemaining],

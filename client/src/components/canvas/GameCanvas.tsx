@@ -216,6 +216,7 @@ const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomSt
       onUndo={handleUndo}
       onRedo={handleRedo}
       canvasEvents={canvasEventHandlers}
+      showInkRemaining={true}
     />
   );
 };

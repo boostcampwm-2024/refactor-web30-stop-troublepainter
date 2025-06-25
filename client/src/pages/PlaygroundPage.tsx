@@ -32,7 +32,7 @@ const PlaygroundPage = () => {
     undo,
     redo,
   } = useDrawing(canvasRef, RoomStatus.DRAWING, {
-    maxPixels: Infinity,
+    maxPixels: Number.MAX_SAFE_INTEGER,
   });
 
   const colorsWithSelect = COLORS_INFO.map((color) => ({
@@ -104,12 +104,13 @@ const PlaygroundPage = () => {
           setBrushSize={setBrushSize}
           drawingMode={drawingMode}
           onDrawingModeChange={setDrawingMode}
-          maxPixels={Infinity}
+          maxPixels={Number.MAX_SAFE_INTEGER}
           canvasEvents={canvasEventHandlers}
           canUndo={canUndo}
           canRedo={canRedo}
           onUndo={undo}
           onRedo={redo}
+          showInkRemaining={false}
         />
       </main>
     </div>

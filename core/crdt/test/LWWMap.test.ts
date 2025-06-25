@@ -3,7 +3,7 @@ import { LWWMap } from '@/crdt/LWWMap';
 
 describe('LWWMap', () => {
   const createTestStroke = (color: string = '#000000', width: number = 2): DrawingData => ({
-    type: DrawType.LINE,
+    type: DrawType.PEN,
     points: [
       { x: 0, y: 0 },
       { x: 2, y: 2 },
@@ -13,6 +13,7 @@ describe('LWWMap', () => {
       { x: 10, y: 10 },
     ],
     style: { color, width },
+    inkRemaining: Number.MAX_SAFE_INTEGER,
   });
 
   let map: LWWMap<DrawingData>;

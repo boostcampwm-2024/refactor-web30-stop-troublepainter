@@ -96,6 +96,7 @@ interface CanvasProps extends HTMLAttributes<HTMLDivElement> {
   maxPixels: number;
   canvasEvents: CanvasEventHandlers;
   isHidden: boolean;
+  showInkRemaining: boolean;
 }
 
 const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
@@ -119,6 +120,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       maxPixels,
       canvasEvents,
       isHidden,
+      showInkRemaining,
       ...props
     },
     ref,
@@ -158,7 +160,7 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
             aria-label={isDrawable ? '그림판 마우스' : '그림 보기'}
             {...canvasEvents}
           />
-          {isDrawable && maxPixels !== Infinity && (
+          {isDrawable && showInkRemaining && (
             <div className={cn('absolute bottom-1 right-1')}>
               <InkGauge remainingPixels={inkRemaining} maxPixels={maxPixels} />
             </div>
