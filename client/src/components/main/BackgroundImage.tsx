@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import tiny from '@/assets/background-tiny.png';
-import { CDN } from '@/constants/cdn';
+import tiny from '@/assets/background/background-tiny.png';
+import backgroundAVIF from '@/assets/background/background.avif';
+import backgroundPNG from '@/assets/background/background.png';
+import backgroundWEBP from '@/assets/background/background.webp';
 import { cn } from '@/utils/cn';
 
 const BackgroundImage = ({ className }: { className: string }) => {
@@ -19,10 +21,10 @@ const BackgroundImage = ({ className }: { className: string }) => {
         />
       </div>
       <picture className={cn('absolute inset-0', className)}>
-        <source srcSet={CDN.BACKGROUND_IMAGE_AVIF} type="image/avif" />
-        <source srcSet={CDN.BACKGROUND_IMAGE_WEBP} type="image/webp" />
+        <source srcSet={backgroundAVIF} type="image/avif" />
+        <source srcSet={backgroundWEBP} type="image/webp" />
         <img
-          src={CDN.BACKGROUND_IMAGE_PNG}
+          src={backgroundPNG}
           alt="배경 패턴"
           className={cn(
             'h-full w-full object-cover transition-opacity duration-300',

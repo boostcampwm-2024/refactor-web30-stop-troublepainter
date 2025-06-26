@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CDN } from '@/constants/cdn';
+import backgroundMusic from '@/assets/sounds/background-music.mp3';
 
 /**
  * 배경 음악을 재생하고 제어하는 커스텀 훅입니다. 자동 재생 정책에 따라 초기 재생이 차단될 수 있으며, 이 경우 콘솔에 경고가 표시됩니다.
@@ -44,7 +44,7 @@ export const useBackgroundMusic = () => {
   const previousVolume = useRef(0.1); // 이전 볼륨값 저장용, 기본값 0.1 (기존 0.5에서 변경)
 
   useEffect(() => {
-    audioRef.current = new Audio(CDN.BACKGROUND_MUSIC);
+    audioRef.current = new Audio(backgroundMusic);
     audioRef.current.preload = 'metadata';
     audioRef.current.loop = true;
     audioRef.current.volume = volume;

@@ -1,6 +1,11 @@
 import { forwardRef, ImgHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { CDN } from '@/constants/cdn';
+import mainLogoAVIF from '@/assets/logo/main-logo.avif';
+import mainLogoPNG from '@/assets/logo/main-logo.png';
+import mainLogoWEBP from '@/assets/logo/main-logo.webp';
+import sideLogoAVIF from '@/assets/logo/side-logo.avif';
+import sideLogoPNG from '@/assets/logo/side-logo.png';
+import sideLogoWEBP from '@/assets/logo/side-logo.webp';
 import { cn } from '@/utils/cn';
 
 const logoVariants = cva('w-auto', {
@@ -27,16 +32,16 @@ interface LogoInfo {
 
 const LOGO_INFO: Record<LogoVariant, LogoInfo> = {
   main: {
-    avif: CDN.MAIN_LOGO_AVIF,
-    webp: CDN.MAIN_LOGO_WEBP,
-    png: CDN.MAIN_LOGO_PNG,
+    avif: mainLogoAVIF,
+    webp: mainLogoWEBP,
+    png: mainLogoPNG,
     alt: '메인 로고',
     description: '우리 프로젝트를 대표하는 메인 로고 이미지입니다',
   },
   side: {
-    avif: CDN.SIDE_LOGO_AVIF,
-    webp: CDN.SIDE_LOGO_WEBP,
-    png: CDN.MAIN_LOGO_PNG,
+    avif: sideLogoAVIF,
+    webp: sideLogoWEBP,
+    png: sideLogoPNG,
     alt: '보조 로고',
     description: '우리 프로젝트를 대표하는 보조 로고 이미지입니다',
   },
