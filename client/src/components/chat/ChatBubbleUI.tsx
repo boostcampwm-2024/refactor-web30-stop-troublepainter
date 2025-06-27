@@ -27,11 +27,7 @@ const ChatBubble = memo(({ className, variant, content, nickname, ...props }: Ch
   const ariaLabel = isOtherUser ? `${nickname}님의 메시지: ${content}` : `내 메시지: ${content}`;
 
   return (
-    <div
-      aria-label={ariaLabel}
-      tabIndex={0}
-      className={cn('flex', isOtherUser ? 'flex-col items-start gap-0.5' : 'justify-end')}
-    >
+    <div aria-label={ariaLabel} className={cn('flex', isOtherUser ? 'flex-col items-start gap-0.5' : 'justify-end')}>
       {isOtherUser && (
         <span className="text-sm text-stroke-sm lg:text-base 2xl:text-lg" aria-hidden="true">
           {nickname}

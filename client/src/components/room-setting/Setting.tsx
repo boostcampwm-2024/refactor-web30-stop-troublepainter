@@ -8,6 +8,7 @@ import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
 import { useModal } from '@/hooks/useModal';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
+import { ShortcutKey } from '@/types/shorcut.types';
 import { cn } from '@/utils/cn';
 
 type SettingKey = keyof RoomSettings;
@@ -16,13 +17,23 @@ export interface RoomSettingItem {
   key: SettingKey;
   label: string;
   options: number[];
-  shortcutKey: keyof typeof SHORTCUT_KEYS;
+  shortcutKey: ShortcutKey;
 }
 
 export const ROOM_SETTINGS: RoomSettingItem[] = [
-  { label: '라운드 수', key: 'totalRounds', options: [3, 5, 7, 9, 11], shortcutKey: 'DROPDOWN_TOTAL_ROUNDS' },
-  { label: '최대 플레이어 수', key: 'maxPlayers', options: [4, 5], shortcutKey: 'DROPDOWN_MAX_PLAYERS' },
-  { label: '제한 시간', key: 'drawTime', options: [15, 20, 25, 30], shortcutKey: 'DROPDOWN_DRAW_TIME' },
+  {
+    label: '라운드 수',
+    key: 'totalRounds',
+    options: [3, 5, 7, 9, 11],
+    shortcutKey: SHORTCUT_KEYS.DROPDOWN_TOTAL_ROUNDS.key,
+  },
+  {
+    label: '최대 플레이어 수',
+    key: 'maxPlayers',
+    options: [4, 5],
+    shortcutKey: SHORTCUT_KEYS.DROPDOWN_MAX_PLAYERS.key,
+  },
+  { label: '제한 시간', key: 'drawTime', options: [15, 20, 25, 30], shortcutKey: SHORTCUT_KEYS.DROPDOWN_DRAW_TIME.key },
   //{ label: '픽셀 수', key: 'maxPixels', options: [300, 500] },
 ];
 

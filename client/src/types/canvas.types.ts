@@ -49,3 +49,10 @@ export interface CanvasEventHandlers {
   onPointerLeave?: (e: PointerEvent<HTMLCanvasElement>) => void;
   onPointerCancel?: (e: PointerEvent<HTMLCanvasElement>) => void;
 }
+
+export type Color = '검정' | '분홍' | '하늘' | '노랑' | '회색';
+
+export type ColorInfo = {
+  color: Color;
+  backgroundColor: string;
+};
