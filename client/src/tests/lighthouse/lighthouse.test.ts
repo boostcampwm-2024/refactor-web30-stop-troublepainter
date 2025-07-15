@@ -1,10 +1,10 @@
-import test from '@playwright/test';
+import test, { expect } from '@playwright/test';
 import { Page } from '@playwright/test';
-import { BASE_URL } from './lighthouse.config';
+import { BASE_URL, LIGHTHOUSE_CONFIG } from './lighthouse.config';
+import { runPerformanceTest } from './lighthouse.helper';
 import { TestCase } from './lighthouse.type';
-import { runPerformanceTest } from './lighthouse.util';
 
-export const testCases: TestCase[] = [
+const testCases: TestCase[] = [
   {
     url: BASE_URL,
     pageName: 'MainPage',
@@ -22,7 +22,16 @@ export const testCases: TestCase[] = [
 test.describe('Lighthouse Performance Tests', () => {
   for (const testCase of testCases) {
     test(`${testCase.pageName} Performance Check`, async () => {
-      await runPerformanceTest(testCase);
+      const result = await runPerformanceTest(testCase);
+      expect(result).toBeTruthy();
+
+      const { categories } = result!;
+      const { thresholds } = LIGHTHOUSE_CONFIG;
+
+      expect(categories.performance.score).toBeGreaterThanOrEqual(thresholds.performance);
+      expect(categories.accessibility.score).toBeGreaterThanOrEqual(thresholds.accessibility);
+      expect(categories['best-practices'].score).toBeGreaterThanOrEqual(thresholds['best-practices']);
+      expect(categories.seo.score).toBeGreaterThanOrEqual(thresholds.seo);
     });
   }
 });

@@ -1,6 +1,12 @@
 import { Page } from '@playwright/test';
 
-type CategoryName = 'performance' | 'accessibility' | 'best-practices' | 'seo';
+export interface TestCase {
+  url: string;
+  pageName: string;
+  setup?: (page: Page) => Promise<void>;
+}
+
+export type CategoryName = 'performance' | 'accessibility' | 'best-practices' | 'seo';
 
 export type MetricName =
   | 'first-contentful-paint'
@@ -11,13 +17,15 @@ export type MetricName =
 
 export type MetricNickname = 'FCP' | 'LCP' | 'TBT' | 'CLS' | 'SI';
 
+export type Score = number;
+
 export interface MetricValue {
   displayValue: string;
-  score: number;
+  score: Score;
 }
 
 export interface CategoryValue {
-  score: number;
+  score: Score;
 }
 
 export type Categories = Record<CategoryName, CategoryValue>;
@@ -27,10 +35,4 @@ export interface LighthouseResult {
   pageName: string;
   categories: Categories;
   metrics: Metrics;
-}
-
-export interface TestCase {
-  url: string;
-  pageName: string;
-  setup?: (page: Page) => Promise<void>;
 }
