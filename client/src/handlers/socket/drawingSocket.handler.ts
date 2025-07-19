@@ -1,16 +1,10 @@
-import type { CRDTMessage, DrawingData } from '@troublepainter/core';
-import { useSocketStore } from '@/stores/socket/socket.store';
+import { sendDrawingMessage } from './socket.helper';
+import type { CRDTUpdateMessage, DrawingData } from '@troublepainter/core';
 
 export const drawingSocketHandlers = {
   // 드로잉 데이터 전송
-  sendDrawing: (drawingData: CRDTMessage<DrawingData>): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.drawing;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise((resolve) => {
-      socket.emit('draw', { drawingData });
-      resolve();
-    });
+  sendDrawing: (message: CRDTUpdateMessage<DrawingData>): Promise<void> => {
+    return sendDrawingMessage('draw', { drawingData: message });
   },
 };
 
