@@ -1,5 +1,5 @@
 import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useCallback, useEffect, useRef } from 'react';
-import { PlayerRole, RoomStatus } from '@troublepainter/core';
+import { PlayerRole } from '@troublepainter/core';
 import { Canvas } from '@/components/canvas/CanvasUI';
 import { COLORS_INFO, DEFAULT_MAX_PIXELS, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
 import { handleInCanvas, handleOutCanvas } from '@/handlers/canvas/cursorInOutHandler';
@@ -13,12 +13,10 @@ import { getCanvasContext } from '@/utils/getCanvasContext';
 import { getDrawPoint } from '@/utils/getDrawPoint';
 
 interface GameCanvasProps {
-  isHost: boolean;
   role: PlayerRole;
   maxPixels?: number;
   currentRound: number;
-  roomStatus: RoomStatus;
-  isHidden: boolean;
+  isDrawable: boolean;
 }
 
 /**
@@ -50,7 +48,7 @@ interface GameCanvasProps {
  *
  * @category Components
  */
-const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomStatus, isHidden }: GameCanvasProps) => {
+const GameCanvas = ({ maxPixels = DEFAULT_MAX_PIXELS, currentRound, isDrawable }: GameCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const cursorCanvasRef = useRef<HTMLCanvasElement>(null);
   const { convertCoordinate } = useCoordinateScale(MAINCANVAS_RESOLUTION_WIDTH, canvasRef);
@@ -73,7 +71,7 @@ const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomSt
     redo,
     makeCRDTSyncMessage,
     resetCanvas,
-  } = useDrawing(canvasRef, roomStatus, {
+  } = useDrawing(canvasRef, isDrawable, {
     maxPixels,
   });
 
@@ -202,8 +200,7 @@ const GameCanvas = ({ role, maxPixels = DEFAULT_MAX_PIXELS, currentRound, roomSt
     <Canvas
       canvasRef={canvasRef}
       cursorCanvasRef={cursorCanvasRef}
-      isDrawable={(role === 'PAINTER' || role === 'DEVIL') && roomStatus === 'DRAWING'}
-      isHidden={isHidden}
+      isDrawable={isDrawable}
       colors={colorsWithSelect}
       brushSize={brushSize}
       setBrushSize={setBrushSize}
