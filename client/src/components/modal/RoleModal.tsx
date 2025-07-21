@@ -1,17 +1,11 @@
-import { useEffect } from 'react';
 import { Modal } from '@/components/ui/Modal';
 import { PLAYING_ROLE_TEXT } from '@/constants/gameConstant';
-import { useModal } from '@/hooks/useModal';
+import { useRoleModal } from '@/hooks/game/useRoleModal';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 
 const RoleModal = () => {
-  const room = useGameSocketStore((state) => state.room);
+  const { isModalOpened, closeModal, handleKeyDown } = useRoleModal();
   const roundAssignedRole = useGameSocketStore((state) => state.roundAssignedRole);
-  const { isModalOpened, closeModal, handleKeyDown, openModal } = useModal(5000);
-
-  useEffect(() => {
-    if (roundAssignedRole) openModal();
-  }, [roundAssignedRole, room?.currentRound]);
 
   return (
     <Modal
