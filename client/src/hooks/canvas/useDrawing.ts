@@ -5,7 +5,6 @@ import {
   CRDTMessageTypes,
   CRDTUpdateMessage,
   CRDTSyncMessage,
-  RoomStatus,
   DrawingData,
   DrawType,
 } from '@troublepainter/core';
@@ -82,7 +81,7 @@ import { DRAWING_MODE } from '@/constants/canvasConstants';
  */
 export const useDrawing = (
   canvasRef: RefObject<HTMLCanvasElement>,
-  roomStatus: RoomStatus,
+  isDrawable: boolean,
   options?: { maxPixels?: number },
 ) => {
   const state = useDrawingState(options);
@@ -274,7 +273,7 @@ export const useDrawing = (
         const { requiresRedraw } = crdt.mergeMap(crdtMessage.state);
         if (requiresRedraw) operation.redrawCanvas();
 
-        if (roomStatus === 'DRAWING') {
+        if (isDrawable) {
           state.strokeHistoryRef.current = [];
           state.historyPointerRef.current = -1;
           state.updateHistoryState();
@@ -292,7 +291,7 @@ export const useDrawing = (
         else if (register.value) operation.renderStroke(register.value);
       }
     },
-    [state.currentPlayerId, operation, roomStatus],
+    [state.currentPlayerId, operation, isDrawable],
   );
 
   const resetCanvas = useCallback(() => {
