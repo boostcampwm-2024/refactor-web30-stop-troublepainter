@@ -1,4 +1,4 @@
-import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useCallback, useEffect, useRef } from 'react';
+import { PointerEvent, useCallback, useEffect, useRef } from 'react';
 import { PlayerRole } from '@troublepainter/core';
 import { Canvas } from '@/components/canvas/CanvasUI';
 import { COLORS_INFO, DEFAULT_MAX_PIXELS, MAINCANVAS_RESOLUTION_WIDTH } from '@/constants/canvasConstants';
@@ -118,7 +118,7 @@ const GameCanvas = ({ maxPixels = DEFAULT_MAX_PIXELS, currentRound, isDrawable }
   }));
 
   const handleDrawStart = useCallback(
-    (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+    (e: PointerEvent<HTMLCanvasElement>) => {
       if (!isConnected) return;
 
       const { canvas } = getCanvasContext(canvasRef);
@@ -134,7 +134,7 @@ const GameCanvas = ({ maxPixels = DEFAULT_MAX_PIXELS, currentRound, isDrawable }
   );
 
   const handleDrawMove = useCallback(
-    (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+    (e: PointerEvent<HTMLCanvasElement>) => {
       const { canvas } = getCanvasContext(canvasRef);
       const point = getDrawPoint(e, canvas);
       const convertPoint = convertCoordinate(point);
@@ -150,7 +150,7 @@ const GameCanvas = ({ maxPixels = DEFAULT_MAX_PIXELS, currentRound, isDrawable }
   );
 
   const handleDrawLeave = useCallback(
-    (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+    (e: PointerEvent<HTMLCanvasElement>) => {
       const { canvas } = getCanvasContext(canvasRef);
       const point = getDrawPoint(e, canvas);
       const convertPoint = convertCoordinate(point);
