@@ -1,11 +1,11 @@
-import { HTMLAttributes, memo, useCallback, useEffect, useState } from 'react';
+import { HTMLAttributes, memo } from 'react';
 import { RoomSettings } from '@troublepainter/core';
 import { SettingContent } from '@/components/room-setting/SettingContent';
 import { WordsThemeModalContent } from '@/components/room-setting/WordsThemeModalContent';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
-import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
+import { useGameSetting } from '@/hooks/game/useGameSetting';
 import { useModal } from '@/hooks/useModal';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 import { cn } from '@/utils/cn';
@@ -27,43 +27,13 @@ export const ROOM_SETTINGS: RoomSettingItem[] = [
 ];
 
 const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) => {
-  // 개별 selector로 필요한 상태만 구독
+  const settingTool = useGameSetting();
+  const { checkCanSettingEdit, updateSetting, selectedValues } = settingTool;
+
   const roomSettings = useGameSocketStore((state) => state.roomSettings);
-  const isHost = useGameSocketStore((state) => state.isHost);
-  const actions = useGameSocketStore((state) => state.actions);
+
   // 모달
   const { isModalOpened, openModal, closeModal, handleKeyDown } = useModal();
-
-  const [selectedValues, setSelectedValues] = useState<RoomSettings>(
-    roomSettings ?? {
-      totalRounds: 5,
-      maxPlayers: 5,
-      drawTime: 30,
-    },
-  );
-
-  useEffect(() => {
-    if (!roomSettings) return;
-    setSelectedValues(roomSettings);
-  }, [roomSettings]);
-
-  const handleSettingChange = useCallback(
-    (key: keyof RoomSettings, value: string) => {
-      const newSettings = {
-        ...selectedValues,
-        [key]: Number(value),
-      };
-      setSelectedValues(newSettings);
-      void gameSocketHandlers.updateSettings({
-        settings: { ...newSettings, drawTime: newSettings.drawTime + 5 },
-      });
-      actions.updateRoomSettings(newSettings);
-    },
-    [selectedValues, actions],
-  );
-
-  // 제시어 테마
-  const headerText = roomSettings?.wordsTheme ? roomSettings.wordsTheme : 'Setting';
 
   return (
     <section
@@ -72,8 +42,10 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
     >
       {/* Setting title */}
       <div className="flex h-14 w-full items-center justify-between border-0 border-violet-950 bg-violet-500 px-4 sm:h-16 sm:rounded-t-[0.625rem] sm:border-b-2">
-        <h2 className="text-2xl text-white text-stroke-md sm:translate-y-1 lg:text-3xl">{headerText}</h2>
-        {isHost && (
+        <h2 className="text-2xl text-white text-stroke-md sm:translate-y-1 lg:text-3xl">
+          {roomSettings?.wordsTheme || 'Setting'}
+        </h2>
+        {checkCanSettingEdit() && (
           <Button
             variant="secondary"
             size={'text'}
@@ -93,13 +65,13 @@ const Setting = memo(({ className, ...props }: HTMLAttributes<HTMLDivElement>) =
         handleKeyDown={handleKeyDown} // handleKeyDown 추가
         className="min-w-72 max-w-lg"
       >
-        <WordsThemeModalContent isModalOpened={isModalOpened} closeModal={closeModal} />
+        <WordsThemeModalContent closeModal={closeModal} settingTool={settingTool} />
       </Modal>
       <SettingContent
         settings={ROOM_SETTINGS}
         values={selectedValues}
-        isHost={isHost || false}
-        onSettingChange={handleSettingChange}
+        canEdit={checkCanSettingEdit() || false}
+        onSettingChange={updateSetting}
       />
     </section>
   );

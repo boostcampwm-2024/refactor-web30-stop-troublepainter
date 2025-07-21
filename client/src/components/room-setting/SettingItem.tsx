@@ -9,12 +9,12 @@ interface SettingItemProps {
   value?: number;
   options: number[];
   onSettingChange: (key: keyof RoomSettings, value: string) => void;
-  isHost: boolean;
+  canEdit: boolean;
   shortcutKey: keyof typeof SHORTCUT_KEYS;
 }
 
 export const SettingItem = memo(
-  ({ label, settingKey, value, options, onSettingChange, isHost, shortcutKey }: SettingItemProps) => {
+  ({ label, settingKey, value, options, onSettingChange, canEdit, shortcutKey }: SettingItemProps) => {
     const handleChange = useCallback(
       (value: string) => {
         onSettingChange(settingKey, value);
@@ -25,7 +25,7 @@ export const SettingItem = memo(
     return (
       <div className="flex w-full max-w-80 items-center justify-between lg:max-w-[80%]">
         <span>{label}</span>
-        {!isHost ? (
+        {!canEdit ? (
           <span>{value || ''}</span>
         ) : (
           <Dropdown
