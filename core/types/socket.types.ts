@@ -131,7 +131,10 @@ export interface RoundEndResponse {
 }
 
 export interface ChatRequest {
+  playerId: string;
+  nickname: string;
   message: string;
+  createdAt: string;
 }
 
 export interface ChatResponse {

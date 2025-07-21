@@ -35,6 +35,8 @@ export enum RoomStatus {
   WAITING = 'WAITING',
   DRAWING = 'DRAWING',
   GUESSING = 'GUESSING',
+  POST_ROUND = 'POST_ROUND',
+  POST_END = 'POST_END',
 }
 
 export enum TimerType {
