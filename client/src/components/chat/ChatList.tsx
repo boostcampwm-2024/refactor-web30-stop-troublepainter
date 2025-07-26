@@ -6,7 +6,7 @@ import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 
 export const ChatList = memo(() => {
   const messages = useChatSocketStore((state) => state.messages);
-  const currentPlayerId = useGameSocketStore((state) => state.currentPlayerId);
+  const playerId = useGameSocketStore((state) => state.currentPlayerId);
   const { containerRef } = useScrollToBottom([messages]);
 
   return (
@@ -17,7 +17,7 @@ export const ChatList = memo(() => {
       </p>
 
       {messages.map((message) => {
-        const isOthers = message.playerId !== currentPlayerId;
+        const isOthers = message.playerId !== playerId;
         return (
           <ChatBubble
             key={`${message.playerId}-${message.createdAt}`}

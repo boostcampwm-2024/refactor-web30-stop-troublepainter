@@ -1,5 +1,4 @@
-import { MouseEvent as ReactMouseEvent, TouchEvent as ReactTouchEvent, useRef } from 'react';
-import { RoomStatus } from '@troublepainter/core';
+import { PointerEvent, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Canvas } from '@/components/canvas/CanvasUI';
 import { Logo } from '@/components/ui/Logo';
@@ -31,7 +30,7 @@ const PlaygroundPage = () => {
     canUndo,
     undo,
     redo,
-  } = useDrawing(canvasRef, RoomStatus.DRAWING, {
+  } = useDrawing(canvasRef, true, {
     maxPixels: Number.MAX_SAFE_INTEGER,
   });
 
@@ -41,14 +40,14 @@ const PlaygroundPage = () => {
     onClick: () => setCurrentColor(color.backgroundColor),
   }));
 
-  const handleDrawStart = (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+  const handleDrawStart = (e: PointerEvent<HTMLCanvasElement>) => {
     const { canvas } = getCanvasContext(canvasRef);
     const point = getDrawPoint(e, canvas);
     const convertPoint = convertCoordinate(point);
     startDrawing(convertPoint);
   };
 
-  const handleDrawMove = (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+  const handleDrawMove = (e: PointerEvent<HTMLCanvasElement>) => {
     const { canvas } = getCanvasContext(canvasRef);
     const point = getDrawPoint(e, canvas);
     const convertPoint = convertCoordinate(point);
@@ -57,7 +56,7 @@ const PlaygroundPage = () => {
     continueDrawing(convertPoint);
   };
 
-  const handleDrawLeave = (e: ReactMouseEvent<HTMLCanvasElement> | ReactTouchEvent<HTMLCanvasElement>) => {
+  const handleDrawLeave = (e: PointerEvent<HTMLCanvasElement>) => {
     const { canvas } = getCanvasContext(canvasRef);
     const point = getDrawPoint(e, canvas);
     const convertPoint = convertCoordinate(point);
@@ -98,7 +97,6 @@ const PlaygroundPage = () => {
           canvasRef={canvasRef}
           cursorCanvasRef={cursorCanvasRef}
           isDrawable={true}
-          isHidden={false}
           colors={colorsWithSelect}
           brushSize={brushSize}
           setBrushSize={setBrushSize}

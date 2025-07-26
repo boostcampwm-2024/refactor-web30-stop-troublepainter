@@ -1,112 +1,43 @@
 import { CheckDrawingRequest } from 'node_modules/@troublepainter/core';
+import { sendGameMessage } from './socket.helper';
 import type {
   CRDTSyncMessage,
   CheckAnswerRequest,
   DrawingData,
   JoinRoomRequest,
-  JoinRoomResponse,
   ReconnectRequest,
   UpdateSettingsRequest,
 } from '@troublepainter/core';
-import { useSocketStore } from '@/stores/socket/socket.store';
 
 // socket 요청만 처리하는 핸들러
 export const gameSocketHandlers = {
-  joinRoom: (request: JoinRoomRequest): Promise<JoinRoomResponse> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise(() => {
-      socket.emit('joinRoom', request);
-    });
+  joinRoom: (message: JoinRoomRequest): Promise<void> => {
+    return sendGameMessage('joinRoom', message);
   },
 
-  reconnect: (request: ReconnectRequest): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise(() => {
-      socket.emit('reconnect', request);
-    });
+  reconnect: (message: ReconnectRequest): Promise<void> => {
+    return sendGameMessage('reconnect', message);
   },
 
-  updateSettings: (request: UpdateSettingsRequest): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise((resolve) => {
-      socket.emit('updateSettings', request);
-      resolve();
-    });
+  updateSettings: (message: UpdateSettingsRequest): Promise<void> => {
+    return sendGameMessage('updateSettings', message);
   },
 
   gameStart: (): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise((resolve) => {
-      socket.emit('gameStart');
-      resolve();
-    });
+    return sendGameMessage('gameStart');
   },
 
-  checkAnswer: (request: CheckAnswerRequest): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise((resolve) => {
-      socket.emit('checkAnswer', request);
-      resolve();
-    });
+  checkAnswer: (message: CheckAnswerRequest): Promise<void> => {
+    return sendGameMessage('checkAnswer', message);
   },
 
-  submittedDrawing: (drawing: CRDTSyncMessage<DrawingData>): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise((resolve) => {
-      socket.emit('submittedDrawing', { drawing });
-      resolve();
-    });
+  submittedDrawing: (message: CRDTSyncMessage<DrawingData>): Promise<void> => {
+    return sendGameMessage('submittedDrawing', message);
   },
 
-  checkDrawing: (request: CheckDrawingRequest): Promise<void> => {
-    const socket = useSocketStore.getState().sockets.game;
-    if (!socket) throw new Error('Socket not connected');
-
-    return new Promise((resolve) => {
-      socket.emit('checkDrawing', request);
-      resolve();
-    });
+  checkDrawing: (message: CheckDrawingRequest): Promise<void> => {
+    return sendGameMessage('checkDrawing', message);
   },
-
-  // updatePlayerStatus: async (request) => {
-  //   const socket = useSocketStore.getState().sockets.game;
-  //   if (!socket) throw new Error('Socket not connected');
-
-  //   return new Promise((resolve, reject) => {
-  //     socket.emit('updatePlayerStatus', request, (error?: SocketError) => {
-  //       if (error) {
-  //         set({ error });
-  //         reject(error);
-  //       } else {
-  //         resolve();
-  //       }
-  //     });
-  //   });
-  // },
-
-  // leaveRoom: async () => {
-  //   const socket = useSocketStore.getState().sockets.game;
-  //   if (!socket) throw new Error('Socket not connected');
-
-  //   return new Promise((resolve) => {
-  //     socket.emit('leaveRoom', () => {
-  //       get().actions.reset();
-  //       resolve();
-  //     });
-  //   });
-  // },
 };
 
 export type GameSocketHandlers = typeof gameSocketHandlers;

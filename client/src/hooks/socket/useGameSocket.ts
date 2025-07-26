@@ -206,6 +206,7 @@ export const useGameSocket = () => {
         gameActions.updateCurrentRound(roundNumber);
         gameActions.updateCurrentWord(word);
         gameActions.updateRoundWinners(winners);
+        gameActions.updateRoomStatus(RoomStatus.POST_ROUND);
         timerActions.updateTimer(TimerType.ENDING, 10);
         gameActions.updatePlayers(players);
       },
@@ -217,7 +218,7 @@ export const useGameSocket = () => {
           gameActions.updateHost(hostId);
           gameActions.updateIsHost(hostId === useGameSocketStore.getState().currentPlayerId);
         }
-        gameActions.updateRoomStatus(RoomStatus.WAITING);
+        gameActions.updateRoomStatus(RoomStatus.POST_END);
         gameActions.resetRound();
         gameActions.updateGameTerminateType(terminationType);
         navigate(`/game/${roomId}/result`, { replace: true });

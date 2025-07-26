@@ -1,42 +1,10 @@
-import { useCallback, useEffect } from 'react';
-import { TerminationType } from '@troublepainter/core';
-import { useNavigate } from 'react-router-dom';
 import podium from '@/assets/podium.gif';
 import PodiumPlayers from '@/components/result/PodiumPlayers';
-import { usePlayerRankings } from '@/hooks/usePlayerRanking';
-import { useTimeout } from '@/hooks/useTimeout';
-import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
-import { useToastStore } from '@/stores/toast.store';
+import { useGameResult } from '@/hooks/game/useGameResult';
 
 const ResultPage = () => {
-  const navigate = useNavigate();
-  const roomId = useGameSocketStore((state) => state.room?.roomId);
-  const terminateType = useGameSocketStore((state) => state.gameTerminateType);
-  const gameActions = useGameSocketStore((state) => state.actions);
-  const toastActions = useToastStore((state) => state.actions);
-  const { firstPlacePlayers, secondPlacePlayers, thirdPlacePlayers } = usePlayerRankings();
-
-  useEffect(() => {
-    const description =
-      terminateType === TerminationType.PLAYER_DISCONNECT
-        ? '나간 플레이어가 있어요. 20초 후 대기실로 이동합니다!'
-        : '20초 후 대기실로 이동합니다!';
-    const variant = terminateType === TerminationType.PLAYER_DISCONNECT ? 'warning' : 'success';
-
-    toastActions.addToast({
-      title: '게임 종료',
-      description,
-      variant,
-      duration: 20000,
-    });
-  }, [terminateType, toastActions]);
-
-  const handleTimeout = useCallback(() => {
-    gameActions.resetGame();
-    navigate(`/lobby/${roomId}`);
-  }, [gameActions, navigate, roomId]);
-
-  useTimeout(handleTimeout, 20000);
+  const { getRankedPlayers } = useGameResult();
+  const { firstPlacePlayers, secondPlacePlayers, thirdPlacePlayers } = getRankedPlayers();
 
   return (
     <section className="relative">
