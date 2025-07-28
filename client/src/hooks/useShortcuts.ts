@@ -1,43 +1,50 @@
-import { useCallback, useEffect } from 'react';
-import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
+import { DependencyList, useEffect } from 'react';
+import { ShortcutKey } from '@/types/shorcut.types';
 
 interface ShortcutConfig {
-  key: keyof typeof SHORTCUT_KEYS | null;
+  key: ShortcutKey;
   action: () => void;
-  disabled?: boolean;
 }
 
-export const useShortcuts = (configs: ShortcutConfig[]) => {
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+export const useShortcuts = (configs: ShortcutConfig[], dependencies: DependencyList = []) => {
+  // 키보드 이벤트로부터 단축키 문자열 생성
+  const createShortcutFromEvent = (event: KeyboardEvent): string => {
+    const parts: string[] = [];
+
+    if (event.ctrlKey) parts.push('ctrl');
+    if (event.shiftKey) parts.push('shift');
+    if (event.key) parts.push(event.key.toLowerCase());
+
+    return parts.join('+');
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const { target } = event;
+
       // input 요소에서는 단축키 비활성화
       if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement ||
-        e.target instanceof HTMLSelectElement
+        (target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          (target instanceof HTMLElement && target.isContentEditable)) &&
+        event.key !== 'Enter' // 엔터 키는 예외
       ) {
         return;
       }
 
-      configs.forEach(({ key, action, disabled }) => {
-        if (!key || disabled) return;
+      const shortcutKey = createShortcutFromEvent(event);
 
-        const shortcut = SHORTCUT_KEYS[key];
-        const pressedKey = e.key.toLowerCase();
-        const isMainKey = pressedKey === shortcut.key.toLowerCase();
-        const isAlternativeKey = shortcut.alternativeKeys?.some((key) => key.toLowerCase() === pressedKey);
-
-        if (isMainKey || isAlternativeKey) {
-          e.preventDefault();
-          action();
+      for (const config of configs) {
+        if (config.key.toLowerCase() === shortcutKey) {
+          config.action();
         }
-      });
-    },
-    [configs],
-  );
+      }
+    };
 
-  useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleKeyDown]);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [configs, ...dependencies]);
 };

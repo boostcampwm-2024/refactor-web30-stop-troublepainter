@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useShortcuts } from './useShortcuts';
+import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { gameSocketHandlers } from '@/handlers/socket/gameSocket.handler';
-import { useShortcuts } from '@/hooks/useShortcuts';
 import { useGameSocketStore } from '@/stores/socket/gameSocket.store';
 
 export const START_BUTTON_STATUS = {
@@ -42,12 +43,16 @@ export const useGameStart = () => {
   }, [room, buttonConfig.disabled, room?.roomId, currentPlayerId]);
 
   // 게임 초대 단축키 적용
-  useShortcuts([
-    {
-      key: 'GAME_START',
-      action: () => void handleStartGame(),
-    },
-  ]);
+
+  useShortcuts(
+    [
+      {
+        key: SHORTCUT_KEYS.GAME_START.key,
+        action: () => void handleStartGame(),
+      },
+    ],
+    [handleStartGame],
+  );
 
   return {
     isHost,

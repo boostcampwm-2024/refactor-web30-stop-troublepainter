@@ -1,7 +1,7 @@
 import { memo, useCallback } from 'react';
 import { RoomSettings } from '@troublepainter/core';
 import Dropdown from '@/components/ui/Dropdown';
-import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
+import { ShortcutKey } from '@/types/shorcut.types';
 
 interface SettingItemProps {
   label: string;
@@ -10,7 +10,7 @@ interface SettingItemProps {
   options: number[];
   onSettingChange: (key: keyof RoomSettings, value: string) => void;
   isHost: boolean;
-  shortcutKey: keyof typeof SHORTCUT_KEYS;
+  shortcutKey: ShortcutKey;
 }
 
 export const SettingItem = memo(

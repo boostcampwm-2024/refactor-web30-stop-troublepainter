@@ -11,7 +11,10 @@ import {
   MAINCANVAS_RESOLUTION_HEIGHT,
   MAINCANVAS_RESOLUTION_WIDTH,
 } from '@/constants/canvasConstants';
-import { CanvasEventHandlers, DrawingMode } from '@/types/canvas.types';
+import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
+import { useShortcuts } from '@/hooks/useShortcuts';
+import { CanvasEventHandlers, Color, DrawingMode } from '@/types/canvas.types';
+import { ShortcutKey } from '@/types/shorcut.types';
 import { cn } from '@/utils/cn';
 
 const toolbarVariants = cva('flex items-center justify-center gap-3 border-violet-950 bg-eastbay-400 p-2', {
@@ -72,7 +75,7 @@ const modeButtonVariants = cva(
 );
 
 interface ColorButton {
-  color: string;
+  color: Color;
   backgroundColor: string;
   isSelected: boolean;
   onClick: () => void;
@@ -125,6 +128,39 @@ const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
     },
     ref,
   ) => {
+    const colorShortKeyMap: Record<Color, ShortcutKey> = {
+      검정: SHORTCUT_KEYS.BLACK_COLOR.key,
+      노랑: SHORTCUT_KEYS.YELLOW_COLOR.key,
+      분홍: SHORTCUT_KEYS.PINK_COLOR.key,
+      하늘: SHORTCUT_KEYS.BLUE_COLOR.key,
+      회색: SHORTCUT_KEYS.GRAY_COLOR.key,
+    };
+
+    useShortcuts(
+      [
+        {
+          key: SHORTCUT_KEYS.PEN.key,
+          action: () => onDrawingModeChange(DRAWING_MODE.PEN),
+        },
+        {
+          key: SHORTCUT_KEYS.FILL.key,
+          action: () => onDrawingModeChange(DRAWING_MODE.FILL),
+        },
+        {
+          key: SHORTCUT_KEYS.UNDO.key,
+          action: onUndo,
+        },
+        {
+          key: SHORTCUT_KEYS.REDO.key,
+          action: onRedo,
+        },
+        ...colors.map((color) => {
+          return { key: colorShortKeyMap[color.color], action: () => color.onClick() };
+        }),
+      ],
+      [onUndo, onRedo],
+    );
+
     return (
       <div
         ref={ref}

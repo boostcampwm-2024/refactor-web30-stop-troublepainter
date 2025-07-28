@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { SHORTCUT_KEYS } from '@/constants/shortcutKeys';
 import { useShortcuts } from '@/hooks/useShortcuts';
 import { useToastStore } from '@/stores/toast.store';
 import { cn } from '@/utils/cn';
@@ -34,7 +35,7 @@ export const InviteButton = () => {
   // 게임 초대 단축키 적용
   useShortcuts([
     {
-      key: 'GAME_INVITE',
+      key: SHORTCUT_KEYS.GAME_INVITE.key,
       action: () => void handleCopyInvite(),
     },
   ]);
